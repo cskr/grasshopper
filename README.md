@@ -53,5 +53,4 @@ Arguments passed as part of the URL can be obtained with an additional parameter
 To Do
 -----
 
-1. Try serving static resources when no route matches request before sending a 404.
-2. Support validation and updation of objects(models) from request parameters.
+1. Support validation and updation of objects(models) from request parameters.
