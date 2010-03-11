@@ -49,3 +49,9 @@ Arguments passed as part of the URL can be obtained with an additional parameter
 
 4. From your applications directory invoke the command `node template.js`.
 5. Point your browser at http://localhost:8080/greetings/ABC.
+
+To Do
+-----
+
+1. Try serving static resources when no route matches request before sending a 404.
+2. Support validation and updation of objects(models) from request parameters.
