@@ -1,7 +1,7 @@
 MVC.js
 ======
 
-A simple MVC framework for web applications built on [node.JS](http://nodejs.org/).  Follow the [instructions to install node.JS](http://nodejs.org/#download).
+A simple MVC framework for web applications built on [node.JS](http://nodejs.org/).  Follow the [instructions to install node.JS](http://nodejs.org/#download).  Join the [mailing list](http://groups.google.com/group/mvcjs) for further help and feedback.
 
 Hello World
 -----------
