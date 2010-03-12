@@ -12,8 +12,8 @@ Hello World
 
         routes = {}
 
-        routes['get:/'] = function(ctx) {
-            ctx.renderText('Hello World!');
+        routes['get:/'] = function() {
+            this.renderText('Hello World!');
         }
 
         require('./lib/mvc').serve(8080, routes);
@@ -41,8 +41,8 @@ Arguments passed as part of the URL can be obtained with an additional parameter
 
         routes = {}
 
-        routes['get:/greetings/{name}'] = function(ctx, args) {
-            ctx.render('greeting', {name: args.name});
+        routes['get:/greetings/{name}'] = function(args) {
+            this.render('greeting', {name: args.name});
         }
 
         require('./lib/mvc').serve(8080, routes);
