@@ -50,6 +50,29 @@ Arguments passed as part of the URL can be obtained with an additional parameter
 4. From your applications directory invoke the command `node template.js`.
 5. Point your browser at http://localhost:8080/greetings/ABC.
 
+Dependency Injection
+--------------------
+
+Hashes containing the necessary dependencies can be added to the `this` context of your controller functions, using the `mvc.addToContext()` function.  You can either specify all the hashes to be included in a single invocation or in multiple invocations.  For example,
+
+    var mvc = require('mvc');
+
+    var dependencies = {
+        dataService: {
+            getStock: function() {
+                return 100;
+            }
+        }
+    }
+    mvc.addToContext(dependencies);
+
+    var routes = {}
+    routes['get:/'] = function() {
+        this.renderText('There are ' + this.dataService.getStock() + ' units in stock!');
+    }
+
+    mvc.serve(8080, routes);
+
 To Do
 -----
 
