@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<cities>
+    {.repeated section @}
+    <city>
+        <id>{id}</id>
+        <name>{name}</name>
+        <population>{population}</population>
+    </city>
+    {.end}
+</cities>
