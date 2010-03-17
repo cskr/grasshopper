@@ -1,7 +1,7 @@
 var mvc = require('./lib/mvc');
 var renderer = require('./lib/renderer');
 
-function CityDataProvider() {
+function InMemoryCityProvider() {
     var cities = {};
     var nextCityId = 1;
 
@@ -24,7 +24,7 @@ function CityDataProvider() {
     }
 
     this.update = function(city) {
-        // Nothing to be done as the service works in-memory.
+        // Nothing to be done in an in-memory provider.
     }
 
     this.remove = function(city) {
@@ -34,11 +34,11 @@ function CityDataProvider() {
 
 var routes = {};
 routes['get:/cities'] = function() {
-    this.render('index', this.cityService.findAll());
+    this.render('index', this.cityProvider.findAll());
 }
 
 routes['get:/cities/{id}'] = function(args) {
-    var city = this.cityService.findById(args.id);
+    var city = this.cityProvider.findById(args.id);
 
     if(city) {
         this.render('show', city);
@@ -53,17 +53,17 @@ routes['post:/cities'] = function() {
        population: this.params.population
    };
 
-   this.cityService.save(city);
+   this.cityProvider.save(city);
    this.status = 201;
    this.render('show', city);
 }
 
 routes['put:/cities/{id}'] = function(args) {
-    var city = this.cityService.findById(args.id);
+    var city = this.cityProvider.findById(args.id);
     if(city) {
         city.name = this.params.name;
         city.population = this.params.population;
-        this.cityService.update(city);
+        this.cityProvider.update(city);
 
         this.status = 204;
         this.render();
@@ -73,9 +73,9 @@ routes['put:/cities/{id}'] = function(args) {
 }
 
 routes['delete:/cities/{id}'] = function(args) {
-    var city = this.cityService.findById(args.id);
+    var city = this.cityProvider.findById(args.id);
     if(city) {
-        this.cityService.remove(city);
+        this.cityProvider.remove(city);
 
         this.status = 204;
         this.render();
@@ -88,5 +88,5 @@ renderer.configure({
     defaultViewExtn: 'xml'
 });
 
-mvc.addToContext({cityService: new CityDataProvider()});
+mvc.addToContext({cityProvider: new InMemoryCityProvider()});
 mvc.serve(8080, routes);
