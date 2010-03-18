@@ -1,5 +1,7 @@
-var mvc = require('./lib/mvc');
-var renderer = require('./lib/renderer');
+require.paths.unshift('./lib');
+
+var mvc = require('mvc');
+var renderer = require('renderer');
 
 function InMemoryCityProvider() {
     var cities = {};
@@ -34,7 +36,7 @@ function InMemoryCityProvider() {
 
 var routes = {};
 routes['get:/cities'] = function() {
-    this.render('index', this.cityProvider.findAll());
+    this.render('index', {cities: this.cityProvider.findAll()});
 }
 
 routes['get:/cities/{id}'] = function(args) {

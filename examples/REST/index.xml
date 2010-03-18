@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 
 <cities>
-    {.repeated section @}
+    <% for(var i = 0; i < cities.length; i++) { %>
     <city>
-        <id>{id}</id>
-        <name>{name}</name>
-        <population>{population}</population>
+        <id><%= cities[i].id %></id>
+        <name><%= cities[i].name %></name>
+        <population><%= cities[i].population %></population>
     </city>
-    {.end}
+    <% } %>
 </cities>
