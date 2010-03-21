@@ -35,6 +35,11 @@ function InMemoryCityProvider() {
 }
 
 var routes = {};
+routes['get:/'] = function() {
+    this.redirect('/cities');
+}
+
+
 routes['get:/cities'] = function() {
     this.render('index', {cities: this.cityProvider.findAll()});
 }
