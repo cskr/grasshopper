@@ -1,8 +1,9 @@
 require.paths.unshift('./lib');
 
-routes = {}
-routes['get:/greetings/{name}'] = function(args) {
-    this.render('greeting', {name: args.name});
-}
+var mvc = require('mvc');
 
-require('mvc').serve(8080, routes);
+mvc.get('/greetings/{name}', function(args) {
+    this.render('greeting', {name: args.name});
+});
+
+mvc.serve(8080);

@@ -12,12 +12,13 @@ Hello World
 
         require.paths.unshift('./lib');
 
-        routes = {}
-        routes['get:/'] = function() {
-            this.renderText('Hello World!');
-        }
+        var mvc = require('mvc');
 
-        require('mvc').serve(8080, routes);
+        mvc.get('/', function() {
+                this.renderText('Hello World!');
+        });
+
+        mvc.serve(8080);
 
 4. From your applications directory invoke the command `node hello.js`.
 5. Point your browser at http://localhost:8080.
@@ -49,12 +50,13 @@ Arguments passed as part of the URL can be obtained with an additional parameter
 
         require.paths.unshift('./lib');
 
-        routes = {}
-        routes['get:/greetings/{name}'] = function(args) {
-            this.render('greeting', {name: args.name});
-        }
+        var mvc = require('mvc');
 
-        require('mvc').serve(8080, routes);
+        mvc.get('/greetings/{name}', function(args) {
+                this.render('greeting', {name: args.name});
+        });
+
+        mvc.serve(8080);
 
 4. From your applications directory invoke the command `node template.js`.
 5. Point your browser at http://localhost:8080/greetings/ABC.
@@ -64,6 +66,8 @@ Dependency Injection
 
 Hashes containing the necessary dependencies can be added to the `this` context of your controller functions, using the `mvc.addToContext()` function.  You can either specify all the hashes to be included in a single invocation or in multiple invocations.  For example,
 
+    require.paths.unshift('./lib');
+
     var mvc = require('mvc');
 
     var dependencies = {
@@ -72,15 +76,14 @@ Hashes containing the necessary dependencies can be added to the `this` context 
                 return 100;
             }
         }
-    }
+    };
     mvc.addToContext(dependencies);
 
-    var routes = {}
-    routes['get:/'] = function() {
+    mvc.get('/', function() {
         this.renderText('There are ' + this.dataService.getStock() + ' units in stock!');
-    }
+    });
 
-    mvc.serve(8080, routes);
+    mvc.serve(8080);
 
 To Do
 -----

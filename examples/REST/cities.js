@@ -34,16 +34,15 @@ function InMemoryCityProvider() {
     }
 }
 
-var routes = {};
-routes['get:/'] = function() {
+mvc.get('/', function() {
     this.redirect('/cities');
-}
+});
 
-routes['get:/cities'] = function() {
+mvc.get('/cities',  function() {
     this.render('index', {cities: this.cityProvider.findAll()});
-}
+});
 
-routes['get:/cities/{id}'] = function(args) {
+mvc.get('/cities/{id}',  function(args) {
     var city = this.cityProvider.findById(args.id);
 
     if(city) {
@@ -51,9 +50,9 @@ routes['get:/cities/{id}'] = function(args) {
     } else {
         this.renderError(404);
     }
-}
+});
 
-routes['post:/cities'] = function() {
+mvc.post('/cities', function() {
    var city = {
        name: this.params.name,
        population: this.params.population
@@ -62,9 +61,9 @@ routes['post:/cities'] = function() {
    this.cityProvider.save(city);
    this.status = 201;
    this.render('show', city);
-}
+});
 
-routes['put:/cities/{id}'] = function(args) {
+mvc.put('/cities/{id}', function(args) {
     var city = this.cityProvider.findById(args.id);
     if(city) {
         city.name = this.params.name;
@@ -76,9 +75,9 @@ routes['put:/cities/{id}'] = function(args) {
     } else {
         this.renderError(404);
     }
-}
+});
 
-routes['delete:/cities/{id}'] = function(args) {
+mvc.del('/cities/{id}', function(args) {
     var city = this.cityProvider.findById(args.id);
     if(city) {
         this.cityProvider.remove(city);
@@ -88,11 +87,11 @@ routes['delete:/cities/{id}'] = function(args) {
     } else {
         this.renderError(404);
     }
-}
+});
 
 renderer.configure({
     defaultViewExtn: 'xml'
 });
 
 mvc.addToContext({cityProvider: new InMemoryCityProvider()});
-mvc.serve(8080, routes);
+mvc.serve(8080);
