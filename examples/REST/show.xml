@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-
-<city>
-    <id><%= id %></id>
-    <name><%= name %></name>
-    <population><%= population %></population>
-</city>

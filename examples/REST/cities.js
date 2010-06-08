@@ -39,14 +39,14 @@ mvc.get('/', function() {
 });
 
 mvc.get('/cities',  function() {
-    this.render('index', {cities: this.cityProvider.findAll()});
+    this.renderText(JSON.stringify({cities: this.cityProvider.findAll()}));
 });
 
 mvc.get('/cities/{id}',  function(args) {
     var city = this.cityProvider.findById(args.id);
 
     if(city) {
-        this.render('show', city);
+        this.renderText(JSON.stringify(city));
     } else {
         this.renderError(404);
     }
@@ -60,7 +60,7 @@ mvc.post('/cities', function() {
 
    this.cityProvider.save(city);
    this.status = 201;
-   this.render('show', city);
+   this.renderText(JSON.stringify(city));
 });
 
 mvc.put('/cities/{id}', function(args) {
@@ -87,10 +87,6 @@ mvc.del('/cities/{id}', function(args) {
     } else {
         this.renderError(404);
     }
-});
-
-renderer.configure({
-    defaultViewExtn: 'xml'
 });
 
 mvc.addToContext({cityProvider: new InMemoryCityProvider()});
