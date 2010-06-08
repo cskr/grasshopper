@@ -89,5 +89,9 @@ mvc.del('/cities/{id}', function(args) {
     }
 });
 
+renderer.configure({
+    defaultViewExtn: 'json'
+});
+
 mvc.addToContext({cityProvider: new InMemoryCityProvider()});
 mvc.serve(8080);
