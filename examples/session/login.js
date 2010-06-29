@@ -5,6 +5,7 @@ var mvc = require('mvc');
 mvc.get('/', function() {
     var self = this;
     this.getSessionValue('user', function(err, user) {
+        self.disableCache();
         if(!err && user) {
             self.render('welcome', {user: user});
         } else {
