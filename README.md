@@ -46,14 +46,15 @@ Arguments passed as part of the URL can be obtained with an additional parameter
             </body>
         </html>
 
-2. Create a file named `template.js` in your application's directory with the following content.  The `render` function must be invoked with the name of a template file (without extension) and an object whose properties are used to expand the template.  The extension of the template file to use is determined by the extention of the request URL (`.html`, if none specified).
+2. Create a file named `template.js` in your application's directory with the following content.  The 'model' property of 'this' must be setup with the data items used in the template.  The `render` function must be invoked with the name of a template file (without extension).  The extension of the template file to use is determined by the extention of the request URL (`.html`, if none specified).
 
         require.paths.unshift('./lib');
 
         var mvc = require('mvc');
 
         mvc.get('/greetings/{name}', function(args) {
-                this.render('greeting', {name: args.name});
+                this.model['name'] = args.name;
+                this.render('greeting');
         });
 
         mvc.serve(8080);

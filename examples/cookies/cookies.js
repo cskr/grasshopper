@@ -3,7 +3,8 @@ require.paths.unshift('./lib');
 var mvc = require('mvc');
 
 mvc.get('/', function() {
-    this.render('index', {cookies: this.requestCookies});
+    this.model['cookies'] = this.requestCookies;
+    this.render('index');
 });
 
 mvc.post('/set_cookie', function() {

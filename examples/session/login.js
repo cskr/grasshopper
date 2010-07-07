@@ -7,7 +7,8 @@ mvc.get('/', function() {
     this.getSessionValue('user', function(err, user) {
         self.disableCache();
         if(!err && user) {
-            self.render('welcome', {user: user});
+            self.model['user'] = user;
+            self.render('welcome');
         } else {
             self.render('login');
         }

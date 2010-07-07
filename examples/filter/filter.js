@@ -18,7 +18,8 @@ mvc.get('/secure_welcome', function() {
     this.disableCache();
     var self = this;
     this.getSessionValue('user', function(err, user) {
-        self.render('welcome', {user: user});
+        self.model['user'] = user;
+        self.render('welcome');
     });
 });
 
