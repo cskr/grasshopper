@@ -3,6 +3,8 @@ MVC.js
 
 A simple MVC framework for web applications built on [node.JS](http://nodejs.org/).  Follow the [instructions to install node.JS](http://nodejs.org/#download).  Join the [mailing list](http://groups.google.com/group/mvcjs) for further help and feedback.
 
+This framework is licensed under the terms of [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+
 Hello World
 -----------
 
