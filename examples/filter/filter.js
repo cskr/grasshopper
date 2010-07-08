@@ -1,7 +1,6 @@
 require.paths.unshift('./lib');
 
 var mvc = require('mvc');
-var sys = require('sys');
 
 mvc.addFilters(/\/secure/, function(nextFilter) {
     var self = this;
