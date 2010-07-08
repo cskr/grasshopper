@@ -1,10 +1,10 @@
 require.paths.unshift('./lib');
 
-var mvc = require('mvc');
+var gh = require('grasshopper');
 
-mvc.get('/greetings/{name}', function(args) {
+gh.get('/greetings/{name}', function(args) {
     this.model['name'] = args.name;
     this.render('greeting');
 });
 
-mvc.serve(8080);
+gh.serve(8080);

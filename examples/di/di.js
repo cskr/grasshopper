@@ -1,6 +1,6 @@
 require.paths.unshift('./lib');
 
-var mvc = require('mvc');
+var gh = require('grasshopper');
 
 var dependencies = {
     dataService: {
@@ -9,11 +9,11 @@ var dependencies = {
         }
     }
 };
-mvc.addToContext(dependencies);
+gh.addToContext(dependencies);
 
-mvc.get('/', function() {
+gh.get('/', function() {
     this.renderText('There are ' + this.dataService.getStock() + ' units in stock!');
 });
 
-mvc.serve(8080);
+gh.serve(8080);
 

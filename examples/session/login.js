@@ -1,8 +1,8 @@
 require.paths.unshift('./lib');
 
-var mvc = require('mvc');
+var gh = require('grasshopper');
 
-mvc.get('/', function() {
+gh.get('/', function() {
     var self = this;
     this.getSessionValue('user', function(err, user) {
         self.disableCache();
@@ -15,18 +15,18 @@ mvc.get('/', function() {
     });
 });
 
-mvc.post('/login', function() {
+gh.post('/login', function() {
     var self = this;
     this.setSessionValue('user', this.params['name'], function() {
         self.redirect('/');
     });
 });
 
-mvc.get('/logout', function() {
+gh.get('/logout', function() {
     var self = this;
     this.endSession(function() {
         self.redirect('/');
     });
 });
 
-mvc.serve(8080);
+gh.serve(8080);

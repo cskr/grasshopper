@@ -1,6 +1,6 @@
 require.paths.unshift('./lib');
 
-var mvc = require('mvc');
+var gh = require('grasshopper');
 var renderer = require('renderer');
 
 function InMemoryCityProvider() {
@@ -34,15 +34,15 @@ function InMemoryCityProvider() {
     }
 }
 
-mvc.get('/', function() {
+gh.get('/', function() {
     this.redirect('/cities');
 });
 
-mvc.get('/cities',  function() {
+gh.get('/cities',  function() {
     this.renderText(JSON.stringify({cities: this.cityProvider.findAll()}));
 });
 
-mvc.get('/cities/{id}',  function(args) {
+gh.get('/cities/{id}',  function(args) {
     var city = this.cityProvider.findById(args.id);
 
     if(city) {
@@ -52,7 +52,7 @@ mvc.get('/cities/{id}',  function(args) {
     }
 });
 
-mvc.post('/cities', function() {
+gh.post('/cities', function() {
    var city = {
        name: this.params.name,
        population: this.params.population
@@ -63,7 +63,7 @@ mvc.post('/cities', function() {
    this.renderText(JSON.stringify(city));
 });
 
-mvc.put('/cities/{id}', function(args) {
+gh.put('/cities/{id}', function(args) {
     var city = this.cityProvider.findById(args.id);
     if(city) {
         city.name = this.params.name;
@@ -77,7 +77,7 @@ mvc.put('/cities/{id}', function(args) {
     }
 });
 
-mvc.del('/cities/{id}', function(args) {
+gh.del('/cities/{id}', function(args) {
     var city = this.cityProvider.findById(args.id);
     if(city) {
         this.cityProvider.remove(city);
@@ -93,5 +93,5 @@ renderer.configure({
     defaultViewExtn: 'json'
 });
 
-mvc.addToContext({cityProvider: new InMemoryCityProvider()});
-mvc.serve(8080);
+gh.addToContext({cityProvider: new InMemoryCityProvider()});
+gh.serve(8080);

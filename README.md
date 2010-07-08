@@ -1,26 +1,26 @@
-MVC.js
-======
+Grasshopper
+==========
 
-A simple MVC framework for web applications built on [node.JS](http://nodejs.org/).  Follow the [instructions to install node.JS](http://nodejs.org/#download).  Join the [mailing list](http://groups.google.com/group/mvcjs) for further help and feedback.
+A simple MVC framework for web applications built on [node.JS](http://nodejs.org/).  Follow the [instructions to install node.JS](http://nodejs.org/#download).  Join the [mailing list](http://groups.google.com/group/grasshopperjs) for further help and feedback.
 
 This framework is licensed under the terms of [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 
 Hello World
 -----------
 
-1. Clone the repository using `git clone git://github.com/tuxychandru/mvc.js.git`.
-2. Create a directory for your application and copy the `lib` directory from the cloned repository to it.
+1. Clone the repository using `git clone git://github.com/tuxychandru/grasshopper.git`.
+2. Create a directory for your application and copy or symlink the `lib` directory from the cloned repository to it.
 3. Create a file named `hello.js` in your application's directory with the following content.
 
         require.paths.unshift('./lib');
 
-        var mvc = require('mvc');
+        var gh = require('grasshopper');
 
-        mvc.get('/', function() {
+        gh.get('/', function() {
                 this.renderText('Hello World!');
         });
 
-        mvc.serve(8080);
+        gh.serve(8080);
 
 4. From your applications directory invoke the command `node hello.js`.
 5. Point your browser at http://localhost:8080.
@@ -52,14 +52,14 @@ Arguments passed as part of the URL can be obtained with an additional parameter
 
         require.paths.unshift('./lib');
 
-        var mvc = require('mvc');
+        var gh = require('grasshopper');
 
-        mvc.get('/greetings/{name}', function(args) {
+        gh.get('/greetings/{name}', function(args) {
                 this.model['name'] = args.name;
                 this.render('greeting');
         });
 
-        mvc.serve(8080);
+        gh.serve(8080);
 
 4. From your applications directory invoke the command `node template.js`.
 5. Point your browser at http://localhost:8080/greetings/ABC.
@@ -67,11 +67,11 @@ Arguments passed as part of the URL can be obtained with an additional parameter
 Dependency Injection
 --------------------
 
-Hashes containing the necessary dependencies can be added to the `this` context of your controller functions, using the `mvc.addToContext()` function.  You can either specify all the hashes to be included in a single invocation or in multiple invocations.  For example,
+Hashes containing the necessary dependencies can be added to the `this` context of your controller functions, using the `gh.addToContext()` function.  You can either specify all the hashes to be included in a single invocation or in multiple invocations.  For example,
 
     require.paths.unshift('./lib');
 
-    var mvc = require('mvc');
+    var gh = require('grasshopper');
 
     var dependencies = {
         dataService: {
@@ -80,13 +80,13 @@ Hashes containing the necessary dependencies can be added to the `this` context 
             }
         }
     };
-    mvc.addToContext(dependencies);
+    gh.addToContext(dependencies);
 
-    mvc.get('/', function() {
+    gh.get('/', function() {
         this.renderText('There are ' + this.dataService.getStock() + ' units in stock!');
     });
 
-    mvc.serve(8080);
+    gh.serve(8080);
 
 To Do
 -----

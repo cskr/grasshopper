@@ -1,9 +1,9 @@
 require.paths.unshift('./lib');
 
-var mvc = require('mvc');
+var gh = require('grasshopper');
 
-mvc.get('/', function() {
+gh.get('/', function() {
     this.renderText('Hello World!');
 });
 
-mvc.serve(8080);
+gh.serve(8080);
