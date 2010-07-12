@@ -31,7 +31,7 @@ Arguments in URL and Template Files
 Arguments passed as part of the URL can be obtained with an additional parameter in the controller function, to which a hash of arguments defined between `{}` in your route and their values would be passed.
 
 **********
-### Template File Format
+### Template File Format (GHP - GrassHopper Pages)
 
 1. Text inside `<% and %>` are evaluated as Javacript code.
 2. Text inside `<%= and %>` are evaluated as Javascript code and its result is included into the output.
