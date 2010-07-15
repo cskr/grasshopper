@@ -14,7 +14,7 @@
             <table>
                 <% for(cookie in cookies) { %>
                     <tr>
-                        <td style="font-weight: bold"><%= cookie %>: </td><td><%= cookies[cookie] %></td>
+                        <td style="font-weight: bold"><%= h(cookie) %>: </td><td><%= h(cookies[cookie]) %></td>
                     </tr>
                 <% } %>
             </table>
