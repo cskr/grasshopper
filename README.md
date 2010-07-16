@@ -8,7 +8,7 @@ This framework is licensed under the terms of [Apache License, Version 2.0](http
 Hello World
 -----------
 
-1. Clone the repository using `git clone git://github.com/tuxychandru/grasshopper.git`.
+1. Clone the repository using `git clone git://github.com/tuxychandru/grasshopper.git && cd grasshopper/ && git submodule init && git submodule update`.
 2. Create a directory for your application and copy or symlink the `lib` directory from the cloned repository to it.
 3. Create a file named `hello.js` in your application's directory with the following content.
 
