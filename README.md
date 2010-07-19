@@ -5,6 +5,21 @@ A simple MVC framework for web applications built on [node.JS](http://nodejs.org
 
 This framework is licensed under the terms of [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 
+Features
+--------
+
+* Integrated support for dependency injection.
+* Filters for intercepting requests.
+* Allows adding view helpers to enable smarter views.
+* Layout and "include" support for views.
+* Automatic selection of view file based on request's extension.
+* Session management with support for custom session storage.
+* Simple API to create and consume cookies.
+* Fast file uploads using [node-formidable](http://github.com/felixge/node-formidable).
+* Makes sending files as response attachments using 'Content-Disposition' simple.
+* Supports partial download of static files.
+* Plenty of documentation through [examples](http://github.com/tuxychandru/grasshopper/tree/master/examples/) (Wiki will be updated with more tutorials).
+
 Hello World
 -----------
 
@@ -91,4 +106,6 @@ Hashes containing the necessary dependencies can be added to the `this` context 
 To Do
 -----
 
-1. Support validation and updation of objects(models) from request parameters.
+* Support conditional GET when serving static files.
+* Support flash messages.
+* Support validation and updation of objects(models) from request parameters.
