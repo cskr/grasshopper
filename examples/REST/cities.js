@@ -1,7 +1,4 @@
-require.paths.unshift('./lib');
-
-var gh = require('grasshopper');
-var renderer = require('renderer');
+var gh = require('./grasshopper');
 
 function InMemoryCityProvider() {
     var cities = {};
@@ -89,7 +86,7 @@ gh.del('/cities/{id}', function(args) {
     }
 });
 
-renderer.configure({
+gh.configure({
     defaultViewExtn: 'json'
 });
 

@@ -1,9 +1,6 @@
-require.paths.unshift('./lib');
+var gh = require('./grasshopper');
 
-var gh = require('grasshopper');
-var renderer = require('renderer');
-
-renderer.configure({
+gh.configure({
     viewsDir: 'views',
     layout: 'layout'
 });

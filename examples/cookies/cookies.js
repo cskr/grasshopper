@@ -1,6 +1,4 @@
-require.paths.unshift('./lib');
-
-var gh = require('grasshopper');
+var gh = require('./grasshopper');
 
 gh.get('/', function() {
     this.model['cookies'] = this.requestCookies;
