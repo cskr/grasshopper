@@ -24,12 +24,10 @@ Hello World
 -----------
 
 1. Clone the repository using `git clone git://github.com/tuxychandru/grasshopper.git && cd grasshopper/ && git submodule init && git submodule update`.
-2. Create a directory for your application and copy or symlink the `lib` directory from the cloned repository to it.
+2. Create a directory for your application and symlink the cloned repository to it.
 3. Create a file named `hello.js` in your application's directory with the following content.
 
-        require.paths.unshift('./lib');
-
-        var gh = require('grasshopper');
+        var gh = require('./grasshopper');
 
         gh.get('/', function() {
                 this.renderText('Hello World!');
@@ -65,9 +63,7 @@ Arguments passed as part of the URL can be obtained with an additional parameter
 
 2. Create a file named `template.js` in your application's directory with the following content.  The 'model' property of 'this' must be setup with the data items used in the template.  The `render` function must be invoked with the name of a template file (without extension).  The extension of the template file to use is determined by the extention of the request URL (`.html`, if none specified).
 
-        require.paths.unshift('./lib');
-
-        var gh = require('grasshopper');
+        var gh = require('./grasshopper');
 
         gh.get('/greetings/{name}', function(args) {
                 this.model['name'] = args.name;
@@ -84,9 +80,7 @@ Dependency Injection
 
 Hashes containing the necessary dependencies can be added to the `this` context of your controller functions, using the `gh.addToContext()` function.  You can either specify all the hashes to be included in a single invocation or in multiple invocations.  For example,
 
-    require.paths.unshift('./lib');
-
-    var gh = require('grasshopper');
+    var gh = require('./grasshopper');
 
     var dependencies = {
         dataService: {
