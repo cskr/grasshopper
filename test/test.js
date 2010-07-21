@@ -1,7 +1,6 @@
-require.paths.unshift('../lib');
-
 var sys = require('sys');
 var suites = [
+    './ghp-test'
 ];
 
 var failures = [], passes = 0;
@@ -14,6 +13,7 @@ suites.forEach(function(suiteName) {
     }
 
     for(testName in suite.tests) {
+        console.log(testName + ' [' + suite.name + ']');
         try {
             suite.tests[testName]();
             passes++;
@@ -38,3 +38,5 @@ if(failures.length > 0) {
         console.log(failure);
     });
 }
+
+console.log('');
