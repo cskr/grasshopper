@@ -18,12 +18,13 @@ Features
 * Fast file uploads using [node-formidable](http://github.com/felixge/node-formidable).
 * Makes sending files as response attachments using 'Content-Disposition' simple.
 * Supports partial download of static files.
+* Supports `if-modified-since`, `if-none-match` and `if-range` headers.
 * Plenty of documentation through [examples](http://github.com/tuxychandru/grasshopper/tree/master/examples/) (Wiki will be updated with more tutorials).
 
 Hello World
 -----------
 
-1. Clone the repository using `git clone git://github.com/tuxychandru/grasshopper.git && cd grasshopper/ && git submodule init && git submodule update`.
+1. Clone the repository using `git clone git://github.com/tuxychandru/grasshopper.git && cd grasshopper/ && git submodule update --init`.
 2. Create a directory for your application and symlink the cloned repository to it.
 3. Create a file named `hello.js` in your application's directory with the following content.
 
