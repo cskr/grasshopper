@@ -1,5 +1,3 @@
-** WARNING This version needs the current development version of node.js to run.  Use 0.1.0 if you're using a release version of node. **
-
 Grasshopper
 ==========
 
