@@ -100,6 +100,5 @@ Hashes containing the necessary dependencies can be added to the `this` context 
 To Do
 -----
 
-* Support conditional GET when serving static files.
 * Support flash messages.
 * Support validation and updation of objects(models) from request parameters.
