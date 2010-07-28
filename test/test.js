@@ -1,6 +1,6 @@
 var sys = require('sys');
 var suites = [
-    './ghp-test'
+    './ghp-test', './model-test'
 ];
 
 var failures = [], passes = 0;

@@ -102,4 +102,3 @@ To Do
 -----
 
 * Support flash messages.
-* Support validation and updation of objects(models) from request parameters.
