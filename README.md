@@ -11,6 +11,8 @@ Features
 * Integrated support for dependency injection.
 * Filters for intercepting requests.
 * Allows adding view helpers to enable smarter views.
+* Supports i18n out of the box.
+* Handles updation and validation of models from forms.
 * Layout and "include" support for views.
 * Automatic selection of view file based on request's extension.
 * Session management with support for custom session storage.
@@ -102,3 +104,4 @@ To Do
 -----
 
 * Support flash messages.
+* Improve template engine to allow callbacks in helpers.
