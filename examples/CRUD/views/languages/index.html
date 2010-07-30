@@ -1,0 +1,25 @@
+<a href="/languages/add">Add New</a>
+<p />
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Statically Typed</th>
+        <th>Dynamically Typed</th>
+        <th></th>
+    </tr>
+    <% languages.forEach(function(language) { %>
+        <tr>
+            <td>
+                <%= h(language.name()) %>
+            </td>
+            <td><%= language.static() ? 'Yes' : 'No' %></td>
+            <td><%= language.dynamic() ? 'Yes' : 'No' %></td>
+            <td>
+               <a href="/languages/<%= language._id %>/edit">Edit</a>
+               <%= postLink({href: '/languages/' + language._id + '/delete',
+                             onclick: "if(!window.confirm('Are you sure?')) return false;",
+                             text: 'Delete'}) %>
+            </td>
+        </tr>
+    <% }); %>
+</table>

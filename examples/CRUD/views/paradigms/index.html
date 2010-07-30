@@ -1,0 +1,25 @@
+<a href="/paradigms/add">Add New</a>
+<p />
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th></th>
+    </tr>
+    <% paradigms.forEach(function(paradigm) { %>
+        <tr>
+            <td>
+                <%= h(paradigm.name()) %>
+            </td>
+            <td>
+                <%= h(paradigm.description()) %>
+            </td>
+            <td>
+               <a href="/paradigms/<%= paradigm._id %>/edit">Edit</a>
+               <%= postLink({href: '/paradigms/' + paradigm._id + '/delete',
+                             onclick: "if(!window.confirm('Are you sure?')) return false;",
+                             text: 'Delete'}) %>
+            </td>
+        </tr>
+    <% }); %>
+</table>

@@ -1,0 +1,14 @@
+<label for="name">Name:</label>
+<input type="text" id="name" name="execution.name" value="<%= execution.name() %>" />
+<span style="color: red"><%= error(execution, 'name', locale) %></span>
+
+<p />
+
+<label for="description">Description:</label>
+<input type="text" id="description" name="execution.description" value="<%= execution.description() %>" />
+<span style="color: red"><%= error(execution, 'description', locale) %></span>
+
+<p />
+
+<input type="submit" value="Save" />
+<a href="/executions">Back</a>

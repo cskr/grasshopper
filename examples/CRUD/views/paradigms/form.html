@@ -1,0 +1,14 @@
+<label for="name">Name:</label>
+<input type="text" id="name" name="paradigm.name" value="<%= paradigm.name() %>" />
+<span style="color: red"><%= error(paradigm, 'name', locale) %></span>
+
+<p />
+
+<label for="description">Description:</label>
+<input type="text" id="description" name="paradigm.description" value="<%= paradigm.description() %>" />
+<span style="color: red"><%= error(paradigm, 'description', locale) %></span>
+
+<p />
+
+<input type="submit" value="Save" />
+<a href="/paradigms">Back</a>
