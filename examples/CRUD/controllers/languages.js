@@ -40,6 +40,7 @@ gh.post('/languages', function() {
         });
     } else {
         languageRepo.save(p, function() {
+            self.flash['languageSuccess'] = 'Language was saved successfully!';
             self.redirect('/languages');
         });
     }
@@ -56,6 +57,7 @@ gh.post('/languages/{id}/update', function(args) {
             });
         } else {
             languageRepo.save(p, function() {
+                self.flash['languageSuccess'] = 'Language was saved successfully!';
                 self.redirect('/languages');
             });
         }

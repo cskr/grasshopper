@@ -31,6 +31,7 @@ gh.post('/executions', function() {
         this.render('executions/add');
     } else {
         executionRepo.save(p, function() {
+            self.flash['executionSuccess'] = 'Execution was saved successfully!';
             self.redirect('/executions');
         });
     }
@@ -45,6 +46,7 @@ gh.post('/executions/{id}/update', function(args) {
             self.render('executions/edit');
         } else {
             executionRepo.save(p, function() {
+                self.flash['executionSuccess'] = 'Execution was saved successfully!';
                 self.redirect('/executions');
             });
         }

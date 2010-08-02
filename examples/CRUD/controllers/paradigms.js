@@ -31,6 +31,7 @@ gh.post('/paradigms', function() {
         this.render('paradigms/add');
     } else {
         paradigmRepo.save(p, function() {
+            self.flash['paradigmSuccess'] = 'Paradigm was saved successfully!';
             self.redirect('/paradigms');
         });
     }
@@ -45,6 +46,7 @@ gh.post('/paradigms/{id}/update', function(args) {
             self.render('paradigms/edit');
         } else {
             paradigmRepo.save(p, function() {
+                self.flash['paradigmSuccess'] = 'Paradigm was saved successfully!';
                 self.redirect('/paradigms');
             });
         }

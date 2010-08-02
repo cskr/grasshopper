@@ -10,9 +10,10 @@ Features
 
 * Integrated support for dependency injection.
 * Filters for intercepting requests.
-* Allows adding view helpers to enable smarter views.
 * Supports i18n out of the box.
 * Handles updation and validation of models from forms.
+* Supports flash messages.
+* Allows adding view helpers to enable smarter views.
 * Layout and "include" support for views.
 * Automatic selection of view file based on request's extension.
 * Session management with support for custom session storage.
@@ -103,5 +104,4 @@ Hashes containing the necessary dependencies can be added to the `this` context 
 To Do
 -----
 
-* Support flash messages.
 * Improve template engine to allow callbacks in helpers.
