@@ -1,4 +1,4 @@
-var gh = require('./grasshopper');
+var gh = require('grasshopper');
 
 gh.get('/greetings/{name}', function(args) {
     this.model['name'] = args.name;

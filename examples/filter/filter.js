@@ -1,4 +1,4 @@
-var gh = require('./grasshopper');
+var gh = require('grasshopper');
 
 gh.addFilters(/\/secure/, function(nextFilter) {
     var self = this;

@@ -1,4 +1,4 @@
-var gh = require('../grasshopper'),
+var gh = require('grasshopper'),
     executionRepo = require('../repositories/executions'),
     Execution = require('../models').Execution;
 

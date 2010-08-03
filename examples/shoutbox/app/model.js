@@ -1,4 +1,4 @@
-var gh = require('../grasshopper'),
+var gh = require('grasshopper'),
     crypto = require('crypto');
 
 function Shout() {

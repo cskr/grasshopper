@@ -1,4 +1,4 @@
-var gh = require('../grasshopper'),
+var gh = require('grasshopper'),
     shoutRepo = require('./shoutRepository'),
     Shout = require('./model').Shout;
 

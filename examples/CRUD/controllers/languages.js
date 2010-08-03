@@ -1,4 +1,4 @@
-var gh = require('../grasshopper'),
+var gh = require('grasshopper'),
     languageRepo = require('../repositories/languages'),
     executionRepo = require('../repositories/executions'),
     paradigmRepo = require('../repositories/paradigms'),
