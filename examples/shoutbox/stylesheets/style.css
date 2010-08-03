@@ -1,0 +1,160 @@
+* {  
+margin: 0;  
+padding: 0;  
+}  
+  
+body {  
+background: #323f66 top center url("../images/back.png") no-repeat;  
+color: #ffffff;  
+font-family: Helvetica, Arial, Verdana, sans-serif;  
+}  
+  
+h1 {  
+font-size: 3.5em;  
+letter-spacing: -1px;  
+background: url("../images/shoutbox.png") no-repeat;  
+width: 303px;  
+height: 66px;  
+margin: 0 auto;  
+text-indent: -9999em;  
+color: #33ccff;  
+}  
+  
+h2 {  
+font-size: 2em;  
+letter-spacing: -1px;  
+background: url("../images/shout.png") no-repeat;  
+width: 119px;  
+height: 44px;  
+text-indent: -9999em;  
+color: #33ccff;  
+clear: both;  
+margin: 15px 0;  
+}  
+  
+h5 a:link, h5 a:visited {  
+color: #ffffff;  
+text-decoration: none;  
+}  
+  
+h5 a:hover, h5 a:active, h5 a:focus {  
+border-bottom: 1px solid #fff;  
+}  
+  
+p {  
+font-size: 0.9em;  
+line-height: 1.3em;  
+font-family: Lucida Sans Unicode, Helvetica, Arial, Verdana, sans-serif;  
+}  
+  
+p.error, .errorExplanation li {  
+background-color: #603131;  
+border: 1px solid #5c2d2d;  
+padding: 10px !important;  
+margin-bottom: 15px;  
+}  
+  
+p.success {  
+background-color: #313d60;  
+border: 1px solid #2d395c;  
+padding: 10px;  
+margin-bottom: 15px;  
+}  
+  
+#container {  
+width: 664px;  
+margin: 20px auto;  
+text-align: center;  
+}  
+  
+#boxtop {  
+margin: 30px auto 0px;  
+background: url("../images/top.png") no-repeat;  
+width: 663px;  
+height: 23px;  
+}  
+  
+#boxbot {  
+margin: 0px auto 30px;  
+background: url("../images/bot.png") no-repeat;  
+width: 664px;  
+height: 25px;  
+}  
+  
+#content {  
+margin: 0 auto;  
+width: 600px;  
+text-align: left;  
+background: url("../images/bg.png") repeat-y;  
+padding: 15px 35px;  
+overflow: hidden;  
+}  
+  
+#content ul {  
+margin-left: 0;  
+margin-bottom: 15px;  
+}  
+  
+#content ul li {  
+list-style: none;  
+clear: both;  
+padding-top: 30px;  
+}  
+  
+#content ul li:first-child {  
+padding-top:0;  
+}  
+  
+.meta {  
+width: 85px;  
+text-align: left;  
+float: left;  
+min-height: 110px;  
+font-weight: bold;  
+}  
+  
+.meta img {  
+padding: 5px;  
+background-color: #313d60;  
+}  
+  
+.meta p {  
+font-size: 0.8em;  
+}  
+  
+.shout {  
+width: 500px;  
+float: left;  
+margin-left: 15px;  
+min-height: 110px;  
+padding-top: 5px;  
+}  
+  
+form {  
+clear: both;  
+margin-top: 135px !important;  
+}  
+  
+.fname, .femail {  
+width: 222px;  
+float: left;  
+}  
+  
+form p {  
+font-weight: bold;  
+margin-bottom: 3px;  
+}  
+  
+form textarea {  
+width: 365px;  
+overflow: hidden;  
+}  
+  
+form input, form textarea {  
+background-color: #313d60;  
+border: 1px solid #2d395c;  
+color: #ffffff;  
+padding: 5px;  
+font-family: Lucida Sans Unicode, Helvetica, Arial, Verdana, sans-serif;  
+margin-bottom: 10px;  
+}
