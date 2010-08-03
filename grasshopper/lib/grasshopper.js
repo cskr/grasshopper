@@ -69,6 +69,10 @@ exports.del = function(path, controller) {
     routes['delete:' + path] = controller;
 }
 
+exports.getController = function(method, path) {
+    return routes[method + ':' + path];
+};
+
 exports.serve = function(port) {
     var routeMatcher = new RouteMatcher();
     var server = http.createServer(function(req, res) {
