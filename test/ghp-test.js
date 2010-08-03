@@ -1,5 +1,5 @@
 var assert = require('assert'),
-    ghp = require('../lib/ghp');
+    ghp = require('../grasshopper/lib/ghp');
 
 exports.name = 'GHP Tests';
 

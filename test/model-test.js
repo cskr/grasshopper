@@ -1,4 +1,4 @@
-var gh = require('..'),
+var gh = require('../grasshopper'),
     assert = require('assert');
 
 exports.name = 'Model Tests';

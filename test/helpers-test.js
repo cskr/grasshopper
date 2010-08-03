@@ -1,5 +1,5 @@
-var gh = require('..'),
-    helpers = require('../lib/helpers'),
+var gh = require('../grasshopper'),
+    helpers = require('../grasshopper/lib/helpers'),
     assert = require('assert');
 
 exports.name = 'Model Tests';
