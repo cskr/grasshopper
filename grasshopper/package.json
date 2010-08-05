@@ -1,6 +1,6 @@
 {
     "name" : "grasshopper",
-    "version" : "0.2.1alpha4",
+    "version" : "0.2.2",
     "contributors": [ 
         { "name": "Chandra Sekar S", "email": "chandru.in@gmail.com" },
     ],
