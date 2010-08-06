@@ -1,15 +1,16 @@
 <html>
     <head>
         <title>Grasshopper</title>
+        <link type="text/css" rel="stylesheet" href="css/style.css"></link>
     </head>
     <body>
-        <h1>Grasshopper</h1>
+        <h1><a href="http://tuxychandru.github.com/grasshopper">Grasshopper</a></h1>
         
         <p>
-            Grasshopper is a full-featured and flexible web application framework for node.js with support for most of the features web applications would need.
+            Grasshopper is a feature-rich and flexible web application framework for node.js with support for most of the features web applications would need.
         </p>
 
-        <h2>Features</h2>
+        <h3>Features</h3>
 
         <ul>
             <li>Integrated support for dependency injection.</li> 
@@ -29,8 +30,40 @@
             <li>Plenty of documentation through <a href="http://github.com/tuxychandru/grasshopper/tree/master/examples/">examples</a>.</li> 
         </ul>
 
+        <h3>Hello World</h3>
+
+        Install grasshopper with this command.
+
+        <pre>
+sudo npm install grasshopper
+        </pre>
+
         <p>
-            This page will be updated with more information soon.  In the meantime, you can check the pages in the <a href="http://wiki.github.com/tuxychandru/grasshopper/">Github Wiki</a> for more tutorials and examples.
+            Create a file named <code>hello.js</code> with this content.
+        </p>
+
+        <pre>
+var gh = require('grasshopper');
+
+gh.get('/', function() {
+    this.renderText('Hello World!');
+});
+
+gh.serve(8080);
+        </pre>
+
+        <p>
+            Execute it with <code>node hello.js</code> and point your browser to <a href="http://localhost:8080/">http://localhost:8080/</a>.
+        </p>
+
+        <h3>What Next?</h3>
+
+        <p>
+            Follow the <a href="http://wiki.github.com/tuxychandru/grasshopper/crud">CRUD</a> example to see various features of Grasshopper in action.  
+        </p>
+        
+        <p>
+            Project <a href="http://github.com/tuxychandru/grasshopper/blob/master/README.md">README</a> and <a href="http://wiki.github.com/tuxychandru/grasshopper/">Wiki</a> in <a href="http://github.com/tuxychandru/grasshopper">Github</a> contain several more tutorials and examples.
         </p>
     </body>
 </html>
