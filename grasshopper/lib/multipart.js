@@ -16,7 +16,7 @@
 var fs = require('fs'),
     sys = require('sys'),
     uuid = require('./uuid'),
-    formidable = require('./support/node-formidable');
+    formidable = require('formidable');
 
 var maxPostSize = undefined,
     uploadsDir = '/tmp';

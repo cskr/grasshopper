@@ -1,6 +1,3 @@
-[submodule "grasshopper/lib/support/node-formidable"]
-	path = grasshopper/lib/support/node-formidable
-	url = http://github.com/felixge/node-formidable.git
 [submodule "examples/support/node-couchdb"]
 	path = examples/support/node-couchdb
 	url = http://github.com/felixge/node-couchdb.git
