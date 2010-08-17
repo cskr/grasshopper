@@ -23,8 +23,10 @@ var http = require('http'),
     model = require('./model'),
     i18n = require('./i18n');
 
-var routes = {};
-var filters = [];
+var routes = {},
+    secureRoutes = {},
+    securePort = undefined,
+    filters = [];
 
 exports.addToContext = function() {
     for(var i = 0; i < arguments.length; i++) {
@@ -69,22 +71,66 @@ exports.del = function(path, controller) {
     routes['delete:' + path] = controller;
 }
 
+exports.secureGet = function(path, controller) {
+    secureRoutes['get:' + path] = controller;
+    secureRoutes['head:' + path] = controller;
+    exports.get(path, redirectSecure);
+}
+
+exports.securePost = function(path, controller) {
+    secureRoutes['post:' + path] = controller;
+}
+
+exports.securePut = function(path, controller) {
+    secureRoutes['put:' + path] = controller;
+}
+
+exports.secureDel = function(path, controller) {
+    secureRoutes['delete:' + path] = controller;
+}
+
+function redirectSecure() {
+    var hostHeader = this.request.headers['host'];
+    var redirectHost = hostHeader;
+    if(hostHeader.indexOf(':') != -1) {
+        redirectHost = hostHeader.split(':')[0] + ':' + securePort;
+    }
+    this.redirect('https://' + redirectHost + this.request.url);
+}
+
 exports.getController = function(method, path) {
     return routes[method + ':' + path];
 };
 
+exports.getSecureController = function(method, path) {
+    return secureRoutes[method + ':' + path];
+};
+
 exports.serve = function(port) {
-    var routeMatcher = new RouteMatcher();
-    var server = http.createServer(function(req, res) {
+    startServer(routes, port);
+    console.log('Hopping at http://127.0.0.1:' + port + '/. Use Ctrl+C to stop.');
+};
+
+exports.serveSecure = function(port, credentials) {
+    startServer(secureRoutes, port, credentials);
+    console.log('Hopping securely at http://127.0.0.1:' + port + '/. Use Ctrl+C to stop.');
+};
+
+function startServer(routes, port, credentials) {
+    var routeMatcher = new RouteMatcher(routes);
+    var server = http.createServer();
+    if(credentials) {
+    	securePort = port;
+        server.setSecure(credentials);
+    }
+    server.addListener("request", function(req, res) {
         try {
             dispatch(req, res, routeMatcher);
         } catch(e) {
             renderer.handleError(e, req, res);
         }
     });
-    
-    server.listen(port);   
-    console.log('Hopping at http://127.0.0.1:' + port + '/. Use Ctrl+C to stop.');
+    server.listen(port);
 }
 
 // Class: Cookie
@@ -144,7 +190,7 @@ function stripPath(path) {
 }
 
 // Class: RouteMatcher
-function RouteMatcher() {
+function RouteMatcher(routes) {
     this.actions = [];
     
     for(var i in routes) {
