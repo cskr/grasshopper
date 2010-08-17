@@ -23,6 +23,10 @@ var http = require('http'),
     model = require('./model'),
     i18n = require('./i18n');
 
+process.addListener('uncaughtException', function(err) {
+    console.log(err.stack);
+});
+
 var routes = {},
     secureRoutes = {},
     securePort = undefined,
