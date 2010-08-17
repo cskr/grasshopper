@@ -16,6 +16,7 @@ Features
 * Allows adding view helpers to enable smarter views.
 * Layout and "include" support for views.
 * Automatic selection of view file based on request's extension.
+* Support for HTTPS with automatic redirection.
 * Session management with support for custom session storage.
 * Simple API to create and consume cookies.
 * Fast file uploads using [node-formidable](http://github.com/felixge/node-formidable).
