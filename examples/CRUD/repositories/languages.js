@@ -1,4 +1,4 @@
-var couchdb = require('../../support/node-couchdb/lib/couchdb'),
+var couchdb = require('node-couchdb'),
     Language = require('../models').Language,
     util = require('./couchUtil');
 

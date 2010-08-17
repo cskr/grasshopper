@@ -1,3 +1,0 @@
-[submodule "examples/support/node-couchdb"]
-	path = examples/support/node-couchdb
-	url = http://github.com/felixge/node-couchdb.git
