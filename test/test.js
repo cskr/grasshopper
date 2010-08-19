@@ -32,7 +32,7 @@ function runTest() {
     });
 }
 
-process.addListener('uncaughtException', function(err) {
+process.on('uncaughtException', function(err) {
     failures.push(tests[testIndex] + ' [' + suite.name + ']');
     console.log(err.stack);
     nextTest();

@@ -23,7 +23,7 @@ var http = require('http'),
     model = require('./model'),
     i18n = require('./i18n');
 
-process.addListener('uncaughtException', function(err) {
+process.on('uncaughtException', function(err) {
     console.log(err.stack);
 });
 
@@ -127,7 +127,7 @@ function startServer(routes, port, credentials) {
     	securePort = port;
         server.setSecure(credentials);
     }
-    server.addListener("request", function(req, res) {
+    server.on("request", function(req, res) {
         try {
             dispatch(req, res, routeMatcher);
         } catch(e) {
@@ -156,10 +156,10 @@ function dispatch(req, res, routeMatcher) {
             if(req.headers['content-type'] && req.headers['content-type'].match(/^application\/x-www-form-urlencoded/)) {
                 req.setEncoding('utf8');
                 var dataString = '';
-                req.addListener('data', function(data) {
+                req.on('data', function(data) {
                     dataString += data;
                 });
-                req.addListener('end', function() {
+                req.on('end', function() {
                     try {
                         params = querystring.parse(dataString);
                         action.invokeController(new renderer.RequestContext(req, res, params), path);
