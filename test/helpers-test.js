@@ -2,7 +2,7 @@ var gh = require('../grasshopper'),
     helpers = require('../grasshopper/lib/helpers'),
     assert = require('assert');
 
-exports.name = 'Model Tests';
+exports.name = 'Helpers Tests';
 
 function Person() {
 }
@@ -16,35 +16,35 @@ Person.prototype.validate = function() {
 }
 
 exports.tests = {
-    'Single error.': function() {
+    'Single error.': function(next) {
         var p = new Person();
-        p.update({}, function() {
-            var err = helpers.error(p, 'name', {'Person.name.required': 'Name is required.'});
-            assert.equal(err, 'Name is required.');
-        });
+        p.update({});
+        var err = helpers.error(p, 'name', {'Person.name.required': 'Name is required.'});
+        assert.equal(err, 'Name is required.');
+        next();
     },
 
-    'Error without locale.': function() {
+    'Error without locale.': function(next) {
         var p = new Person();
-        p.update({}, function() {
-            var err = helpers.error(p, 'name');
-            assert.equal(err, 'Person.name.required');
-        });
+        p.update({});
+        var err = helpers.error(p, 'name');
+        assert.equal(err, 'Person.name.required');
+        next();
     },
 
-    'Multiple errors on property.': function() {
+    'Multiple errors on property.': function(next) {
         var p = new Person();
-        p.update({}, function() {
-            var err = helpers.errors(p, 'age', {'Person.age.required': 'Age is required.', 'Person.age.numeric': 'Age must be numeric.'});
-            assert.deepEqual(err, ['Age is required.', 'Age must be numeric.']);
-        });
+        p.update({});
+        var err = helpers.errors(p, 'age', {'Person.age.required': 'Age is required.', 'Person.age.numeric': 'Age must be numeric.'});
+        assert.deepEqual(err, ['Age is required.', 'Age must be numeric.']);
+        next();
     },
 
-    'Multiple errors on model.': function() {
+    'Multiple errors on model.': function(next) {
         var p = new Person();
-        p.update({}, function() {
-            var err = helpers.errors(p, {'Person.name.required': 'Name is required.', 'Person.age.required': 'Age is required.', 'Person.age.numeric': 'Age must be numeric.'});
-            assert.deepEqual(err, ['Name is required.', 'Age is required.', 'Age must be numeric.']);
-        });
+        p.update({});
+        var err = helpers.errors(p, {'Person.name.required': 'Name is required.', 'Person.age.required': 'Age is required.', 'Person.age.numeric': 'Age must be numeric.'});
+        assert.deepEqual(err, ['Name is required.', 'Age is required.', 'Age must be numeric.']);
+        next();
     }
 };

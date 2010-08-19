@@ -4,7 +4,7 @@ var i18n = require('../grasshopper/lib/i18n'),
 exports.name = 'i18n Tests';
 
 exports.tests = {
-    'Choose right locale.': function() {
+    'Choose right locale.': function(next) {
         locales = {
             'en-gb': {
                 title: 'Colour'
@@ -25,9 +25,10 @@ exports.tests = {
 
         i18n.init(ctx);
         assert.equal(ctx.locale, locales['en-gb']);
+        next();
     },
 
-    'Fallback to default locale.': function() {
+    'Fallback to default locale.': function(next) {
         locales = {
             'en-us': {
                 title: 'Color'
@@ -45,5 +46,6 @@ exports.tests = {
 
         i18n.init(ctx);
         assert.equal(ctx.locale, locales['en-us']);
+        next();
     }
 };

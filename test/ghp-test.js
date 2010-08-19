@@ -4,28 +4,33 @@ var assert = require('assert'),
 exports.name = 'GHP Tests';
 
 exports.tests = {
-    'Fill simple text.': function() {
+    'Fill simple text.': function(next) {
         var result = ghp.fillText('Hi');
         assert.equal(result, 'Hi');
+        next();
     },
 
-    'Fill text with model.': function() {
+    'Fill text with model.': function(next) {
         var result = ghp.fillText('Hello, <%= name %>!', {name: 'Chandru'});
         assert.equal(result, 'Hello, Chandru!');
+        next();
     },
 
-    'Fill simple template.': function() {
+    'Fill simple template.': function(next) {
         var result = ghp.fill('./fixtures/ghp/simple.txt', {name: 'Chandru'}, 'utf8', './fixtures/ghp', 'txt');
         assert.equal(result, 'Hello, Chandru!\n');
+        next();
     },
 
-    'Fill template with HTML escape.': function() {
+    'Fill template with HTML escape.': function(next) {
         var result = ghp.fill('./fixtures/ghp/simple_with_escape.txt', {name: '<i>Chandru</i>'}, 'utf8', './fixtures/ghp', 'txt');
         assert.equal(result, 'Hello, &lt;i&gt;Chandru&lt;/i&gt;!\n');
+        next();
     },
 
-    'Fill template with include.': function() {
+    'Fill template with include.': function(next) {
         var result = ghp.fill('./fixtures/ghp/simple_with_include.txt', {}, 'utf8', './fixtures/ghp', 'txt');
         assert.equal(result, 'Hello, Chandru\n!\n');
+        next();
     }
 };

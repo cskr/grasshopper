@@ -8,7 +8,7 @@ function Person() {
 
 gh.initModel(Person, 'name', 'age', 'dob', 'someProp', 'friends');
 
-Person.prototype.validate = function() {
+Person.prototype.validate = function(next) {
     this.validateRequired('name', 'Name is required.', false);
     this.validateNumeric('age', false);
     this.validateDate('dob');
@@ -16,12 +16,13 @@ Person.prototype.validate = function() {
 }
 
 exports.tests = {
-    'Update property without converter.': function() {
+    'Update property without converter.': function(next) {
         var p = new Person().update({name: 'Chandru'});
         assert.equal(p.name(), 'Chandru');
+        next();
     },
 
-    'Update property with converter.': function() {
+    'Update property with converter.': function(next) {
         var p = new Person().update({name: 'Chandru'}, function(prop, val, cb){
             assert.equal(prop, 'name');
             assert.equal(val, 'Chandru');
@@ -29,9 +30,10 @@ exports.tests = {
         });
 
         assert.equal(p.name(), 'ABC');
+        next();
     },
 
-    'Update property with async converter.': function() {
+    'Update property with async converter.': function(next) {
         var p = new Person().update({name: 'Chandru'}, function(prop, val, cb){
             assert.equal(prop, 'name');
             assert.equal(val, 'Chandru');
@@ -40,20 +42,23 @@ exports.tests = {
             }, 100);
         }, function() {
             assert.equal(p.name(), 'ABC');
+            next();
         });
     },
 
-    'Update array property.': function() {
+    'Update array property.': function(next) {
         var p = new Person().update({'*friends': ['a', 'b']});
         assert.deepEqual(p.friends(), ['a', 'b']);
+        next();
     },
 
-    'Update array property without prefix.': function() {
+    'Update array property without prefix.': function(next) {
         var p = new Person().update({friends: ['a', 'b']});
         assert.equal(p.friends(), 'a');
+        next();
     },
 
-    'Update array property with converter.': function() {
+    'Update array property with converter.': function(next) {
         var p = new Person();
         p.update({'*friends': ['a', 'b']}, function(prop, val, cb) {
             assert.equal(prop, 'friends');
@@ -61,9 +66,10 @@ exports.tests = {
             cb(['x', 'y']);
         });
         assert.deepEqual(p.friends(), ['x', 'y']);
+        next();
     },
 
-    'Update array property with converter without prefix.': function() {
+    'Update array property with converter without prefix.': function(next) {
         var p = new Person();
         p.update({friends: ['a', 'b']}, function(prop, val, cb) {
             assert.equal(prop, 'friends');
@@ -71,9 +77,10 @@ exports.tests = {
             cb(['x', 'y']);
         });
         assert.deepEqual(p.friends(), ['x', 'y']);
+        next();
     },
 
-    'Trigger validations.': function() {
+    'Trigger validations.': function(next) {
         var p = new Person();
         p.update({age: 'ABC', dob: 'XYZ'});
         assert.ok(!p.isValid());
@@ -81,5 +88,6 @@ exports.tests = {
         assert.equal(p.errors['age'][0], 'numeric');
         assert.equal(p.errors['dob'][0], 'Person.dob.date');
         assert.equal(p.errors['someProp'][0], 'Person.someProp.pattern');
+        next();
     }
 };
