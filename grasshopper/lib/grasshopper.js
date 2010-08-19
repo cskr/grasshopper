@@ -30,6 +30,7 @@ process.on('uncaughtException', function(err) {
 var routes = {},
     secureRoutes = {},
     securePort = undefined,
+    servers = [],
     filters = [];
 
 exports.addToContext = function() {
@@ -120,6 +121,13 @@ exports.serveSecure = function(port, credentials) {
     console.log('Hopping securely at http://127.0.0.1:' + port + '/. Use Ctrl+C to stop.');
 };
 
+exports.stop = function() {
+    servers.forEach(function(server) {
+        server.close();
+    });
+    servers = [];
+};
+
 function startServer(routes, port, credentials) {
     var routeMatcher = new RouteMatcher(routes);
     var server = http.createServer();
@@ -134,6 +142,7 @@ function startServer(routes, port, credentials) {
             renderer.handleError(e, req, res);
         }
     });
+    servers.push(server);
     server.listen(port);
 }
 
