@@ -1,4 +1,4 @@
-var couchdb = require('node-couchdb'),
+var couchdb = require('couchdb'),
     Execution = require('../models').Execution,
     util = require('./couchUtil');
 

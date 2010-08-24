@@ -1,4 +1,4 @@
-var couchdb = require('node-couchdb'),
+var couchdb = require('couchdb'),
     Paradigm = require('../models').Paradigm,
     util = require('./couchUtil');
 
