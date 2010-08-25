@@ -4,18 +4,6 @@ var assert = require('assert'),
 exports.name = 'GHP Tests';
 
 exports.tests = {
-    'Fill simple text.': function(next) {
-        var result = ghp.fillText('Hi');
-        assert.equal(result, 'Hi');
-        next();
-    },
-
-    'Fill text with model.': function(next) {
-        var result = ghp.fillText('Hello, <%= name %>!', {name: 'Chandru'});
-        assert.equal(result, 'Hello, Chandru!');
-        next();
-    },
-
     'Fill simple template.': function(next) {
         var result = ghp.fill('./fixtures/ghp/simple.txt', {name: 'Chandru'}, 'utf8', './fixtures/ghp', 'txt');
         assert.equal(result, 'Hello, Chandru!\n');

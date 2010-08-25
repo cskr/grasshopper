@@ -30,10 +30,6 @@ function fill(templateFile, model, encoding, viewsDir, extn, locale) {
 
 exports.fill = fill;
 
-exports.fillText = function(text, model) {
-    return compile(text, 0)(model);
-}
-
 exports.addHelpers = function(newHelpers) {
     for(var i = 0; i < arguments.length; i++) {
         helpers.push(arguments[i]);

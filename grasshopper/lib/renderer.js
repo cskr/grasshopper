@@ -169,15 +169,7 @@ RequestContext.prototype.render = function(view, useLayout) {
 };
 
 RequestContext.prototype.renderText = function(text) {
-    for(var i in this.model) {
-        var hasModel = true;
-		break;
-    }
-    if(!hasModel) {
-        this.send(text);
-    } else {
-        this.send(ghp.fillText(text, this.model));
-    }
+    this.send(text);
 };
 
 RequestContext.prototype.send = function(text) {
