@@ -22,12 +22,6 @@ exports.tests = {
         next();
     },
 
-    'Fill template with HTML escape.': function(next) {
-        var result = ghp.fill('./fixtures/ghp/simple_with_escape.txt', {name: '<i>Chandru</i>'}, 'utf8', './fixtures/ghp', 'txt');
-        assert.equal(result, 'Hello, &lt;i&gt;Chandru&lt;/i&gt;!\n');
-        next();
-    },
-
     'Fill template with include.': function(next) {
         var result = ghp.fill('./fixtures/ghp/simple_with_include.txt', {}, 'utf8', './fixtures/ghp', 'txt');
         assert.equal(result, 'Hello, Chandru\n!\n');

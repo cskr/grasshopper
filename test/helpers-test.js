@@ -46,5 +46,11 @@ exports.tests = {
         var err = helpers.errors(p, {'Person.name.required': 'Name is required.', 'Person.age.required': 'Age is required.', 'Person.age.numeric': 'Age must be numeric.'});
         assert.deepEqual(err, ['Name is required.', 'Age is required.', 'Age must be numeric.']);
         next();
+    },
+
+    'HTML escape.': function(next) {
+        var result = helpers.h('Hello, <i>Chandru</i>!');
+        assert.equal(result, 'Hello, &lt;i&gt;Chandru&lt;/i&gt;!');
+        next();
     }
 };
