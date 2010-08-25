@@ -21,6 +21,7 @@ var http = require('http'),
     multipart = require('./multipart'),
     session = require('./session'),
     model = require('./model'),
+    ghp = require('./ghp'),
     i18n = require('./i18n');
 
 process.on('uncaughtException', function(err) {
@@ -49,6 +50,8 @@ exports.addFilters = function(regex) {
 
     filters.push({pattern: regex, filters: filtersArray}); 
 }
+
+exports.addHelpers = ghp.addHelpers;
 
 exports.configure = function(config) {
     renderer.configure(config);

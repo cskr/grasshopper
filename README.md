@@ -102,8 +102,3 @@ Hashes containing the necessary dependencies can be added to the `this` context 
     });
 
     gh.serve(8080);
-
-To Do
------
-
-* Improve template engine to allow callbacks in helpers.

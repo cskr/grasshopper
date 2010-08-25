@@ -37,7 +37,7 @@ exports.addHelpers = function(newHelpers) {
 }
 
 function compile(text, helpersCount) {
-    var funcBody = "var p=[], model = model || {};";
+    var funcBody = "var _out = [], model = model || {};";
 
     for(var i = 0; i < helpersCount; i++) {
         funcBody += "with(helpers[" + i + "]) {";
@@ -47,18 +47,18 @@ function compile(text, helpersCount) {
     var parts = text.split("<%");
     parts.forEach(function(part) {
         if(part.indexOf("%>") == -1) {
-            funcBody += "p.push('" + escapeCode(part) + "');";
+            funcBody += "_out.push('" + escapeCode(part) + "');";
         } else if(part.charAt(0) == '=') {
             var subParts = part.split('%>');
-            funcBody += "p.push(" + subParts[0].substring(1) + ");";
+            funcBody += "_out.push(" + subParts[0].substring(1) + ");";
             if(subParts.length > 1) {
-                funcBody += "p.push('" + escapeCode(subParts[1]) + "');";
+                funcBody += "_out.push('" + escapeCode(subParts[1]) + "');";
             }
         } else {
             var subParts = part.split('%>');
             funcBody += subParts[0];
             if(subParts.length > 1) {
-                funcBody += "p.push('" + escapeCode(subParts[1]) + "');";
+                funcBody += "_out.push('" + escapeCode(subParts[1]) + "');";
             }
         }
     });
@@ -70,7 +70,7 @@ function compile(text, helpersCount) {
         funcBody += "}";
     }
 
-    funcBody += "return p.join('');"
+    funcBody += "return _out.join('');"
     return new Function("model", "helpers", funcBody);
 }
 
