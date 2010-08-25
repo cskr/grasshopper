@@ -1,0 +1,3 @@
+<li>
+<%= items.join('</li>\n<li>') %>
+</li>

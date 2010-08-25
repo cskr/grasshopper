@@ -12,8 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Based On - http://github.com/graphnode/node-template
  */
 var fs = require('fs');
  
@@ -49,28 +47,27 @@ function compile(text, helpersCount) {
         funcBody += "with(helpers[" + i + "]) {";
     }
 
-    funcBody += "with(model){ " +
-            "p.push('" +
-                text
-                .split("'").join("\\'")
-                .split("\r\n").join("\n")
-                .split("\n").join("\\n")
-                .replace(/<%=(.+?)%>/mg, function(m, t) {
-                    return "'," + t
-                           .split("\\'").join("'")
-                           .split("\\n").join("\n") +
-                           ",'"
-                })
-                .replace(/<%(.*?)%>/mg, function(m, t) { 
-                    return '<%' + t
-                           .split("\\'").join("'")
-                           .split("\\n").join("\n") +
-                           '%>'; 
-                })
-                .split("<%").join("');")
-                .split("%>").join("p.push('") +
-            "');"+
-        "}";
+    funcBody += "with(model){ ";
+    var parts = text.split("<%");
+    parts.forEach(function(part) {
+        if(part.indexOf("%>") == -1) {
+            funcBody += "p.push('" + escapeCode(part) + "');";
+        } else if(part.charAt(0) == '=') {
+            var subParts = part.split('%>');
+            funcBody += "p.push(" + subParts[0].substring(1) + ");";
+            if(subParts.length > 1) {
+                funcBody += "p.push('" + escapeCode(subParts[1]) + "');";
+            }
+        } else {
+            var subParts = part.split('%>');
+            funcBody += subParts[0];
+            if(subParts.length > 1) {
+                funcBody += "p.push('" + escapeCode(subParts[1]) + "');";
+            }
+        }
+    });
+
+    funcBody += "}";
 
 
     for(var i = 0; i < helpersCount; i++) {
@@ -79,6 +76,10 @@ function compile(text, helpersCount) {
 
     funcBody += "return p.join('');"
     return new Function("model", "helpers", funcBody);
+}
+
+function escapeCode(str) {
+    return str.replace("'", "\\'").split('\r').join('\\r').split('\n').join('\\n');
 }
 
 // Class: IncludeHelper
