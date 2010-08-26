@@ -27,9 +27,14 @@ exports.error = function(model, prop, locale) {
 }
 
 exports.errors = function(model, prop, locale) {
+    if(typeof prop != 'string' && locale === undefined) {
+        locale = prop;
+        prop = undefined;
+    }
+
     var result = [];
 
-    if(model.errors && typeof prop == 'string' && model.errors[prop]) {
+    if(model.errors && prop && model.errors[prop]) {
         model.errors[prop].forEach(function(err) {
             if(locale) {
                 result.push(locale[err]);
@@ -37,8 +42,7 @@ exports.errors = function(model, prop, locale) {
                 result.push(err);
             }
         });
-    } else if(model.errors) {
-        locale = prop;
+    } else if(model.errors && prop === undefined) {
         Object.keys(model.errors).forEach(function(prop) {
             model.errors[prop].forEach(function(err) {
                 if(locale) {
