@@ -32,7 +32,7 @@ exports.parse = function(context, callback) {
     context.params = {};
     var req = context.request;
     if(new Number(req.headers['content-length']) > maxPostSize) {
-        context.handleError(new Error('LARGE_UPLOAD'));
+        context.renderError(413);
         return;
     }
 
