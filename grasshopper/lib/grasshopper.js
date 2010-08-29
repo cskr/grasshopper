@@ -34,6 +34,8 @@ var routes = {},
     servers = [],
     filters = [];
 
+var maxFormSize = 1048576;
+
 exports.addToContext = function() {
     for(var i = 0; i < arguments.length; i++) {
         for(var key in arguments[i]) {
@@ -54,6 +56,9 @@ exports.addFilters = function(regex) {
 exports.addHelpers = ghp.addHelpers;
 
 exports.configure = function(config) {
+    if(config.maxFormSize)
+        maxFormSize = config.maxFormSize;
+
     renderer.configure(config);
     multipart.configure(config);
     session.configure(config);
@@ -166,6 +171,10 @@ function dispatch(req, res, routeMatcher) {
     if(action) {
         if((req.method == 'POST' || req.method == 'PUT')) {
             if(req.headers['content-type'] && req.headers['content-type'].match(/^application\/x-www-form-urlencoded/)) {
+                if(Number(req.headers['content-length']) > maxFormSize) {
+                    new renderer.RequestContext(req, res, {}).renderError(413);
+                    return;
+                }
                 req.setEncoding('utf8');
                 var dataString = '';
                 req.on('data', function(data) {

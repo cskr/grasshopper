@@ -18,12 +18,12 @@ var fs = require('fs'),
     uuid = require('./uuid'),
     formidable = require('formidable');
 
-var maxPostSize = undefined,
+var maxUploadSize = undefined,
     uploadsDir = '/tmp';
 
 exports.configure = function(config) {
-    if(config.maxPostSize)
-        maxPostSize = config.maxPostSize;
+    if(config.maxUploadSize)
+        maxUploadSize = config.maxUploadSize;
     if(config.uploadsDir)
         uploadsDir = config.uploadsDir;
 };
@@ -31,7 +31,7 @@ exports.configure = function(config) {
 exports.parse = function(context, callback) {
     context.params = {};
     var req = context.request;
-    if(new Number(req.headers['content-length']) > maxPostSize) {
+    if(Number(req.headers['content-length']) > maxUploadSize) {
         context.renderError(413);
         return;
     }
