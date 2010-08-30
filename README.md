@@ -20,6 +20,7 @@ Features
 * Session management with support for custom session storage.
 * Simple API to create and consume cookies.
 * Fast file uploads using [node-formidable](http://github.com/felixge/node-formidable).
+* Configurable form post and upload sizes.
 * Makes sending files as response attachments using 'Content-Disposition' simple.
 * Supports partial download of static files.
 * Supports `if-modified-since`, `if-none-match` and `if-range` headers.
