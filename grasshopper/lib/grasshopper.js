@@ -119,14 +119,26 @@ exports.getSecureController = function(method, path) {
     return secureRoutes[method + ':' + path];
 };
 
-exports.serve = function(port) {
-    startServer(routes, port);
-    console.log('Hopping at http://127.0.0.1:' + port + '/. Use Ctrl+C to stop.');
+exports.serve = function(port, hostname, callback) {
+    if(typeof hostname === 'function') {
+        callback = hostname;
+        hostname = undefined;
+    }
+    startServer(routes, port, undefined, hostname, function() {
+        console.log('Hopping at http://127.0.0.1:' + port + '/. Use Ctrl+C to stop.');
+        if(callback) callback();
+    });
 };
 
-exports.serveSecure = function(port, credentials) {
-    startServer(secureRoutes, port, credentials);
-    console.log('Hopping securely at http://127.0.0.1:' + port + '/. Use Ctrl+C to stop.');
+exports.serveSecure = function(port, credentials, hostname, callback) {
+    if(typeof hostname === 'function') {
+        callback = hostname;
+        hostname = undefined;
+    }
+    startServer(secureRoutes, port, credentials, hostname, function() {
+        console.log('Hopping securely at http://127.0.0.1:' + port + '/. Use Ctrl+C to stop.');
+        if(callback) callback();
+    });
 };
 
 exports.stop = function() {
@@ -136,7 +148,7 @@ exports.stop = function() {
     servers = [];
 };
 
-function startServer(routes, port, credentials) {
+function startServer(routes, port, credentials, hostname, callback) {
     var routeMatcher = new RouteMatcher(routes);
     var server = http.createServer();
     if(credentials) {
@@ -151,7 +163,7 @@ function startServer(routes, port, credentials) {
         }
     });
     servers.push(server);
-    server.listen(port);
+    server.listen(port, hostname, callback);
 }
 
 // Class: Cookie
