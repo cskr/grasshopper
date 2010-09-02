@@ -212,7 +212,10 @@ function dispatch(req, res, routeMatcher) {
             action.invokeController(new renderer.RequestContext(req, res, params), path);
         }
     } else {
-        new renderer.RequestContext(req, res, params).renderStatic();
+        var context = new renderer.RequestContext(req, res, params);
+        applyFilters(context, path, function() { 
+            context.renderStatic();
+        });
     }
 }
 
@@ -275,13 +278,13 @@ Action.prototype.invokeController = function(context, path) {
 
     var self = this; 
     context.rotateFlash(function() {
-        self.applyFilters(context, path, function() { 
+        applyFilters(context, path, function() { 
             self.controller.apply(context, [argValues]);
         });
     });
 };
 
-Action.prototype.applyFilters = function(context, path, actionCallback) {
+function applyFilters(context, path, actionCallback) {
     var matchingFilters = [];
     for(var i = 0; i < filters.length; i++) {
         if(path.match(filters[i].pattern)) {
