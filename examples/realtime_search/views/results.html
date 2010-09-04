@@ -1,0 +1,13 @@
+<h1>Real-time Results for "<%= searchTags %>"</h1>
+<ul id="itemsList">
+<% items.forEach(function(item) { %>
+    <li><%= h(item.name()) %></li>
+<% }); %>
+</ul>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="js/script.js"></script>
+<script type="text/javascript">
+setTimeout(function() {
+    watch('<%= searchTags %>');
+}, 0);
+</script>

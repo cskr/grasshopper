@@ -1,0 +1,11 @@
+<h1>Add an Item</h1>
+<form action="/items" method="post">
+    Name: <input name="item.name" value="<%= item.name() %>" />
+    <span style="color: red"><%= error(item, 'name', locale) %></span>
+    <p />
+    Tags: <input name="item.tags" value="<%= item.tags() %>" />
+    <span style="color: red"><%= error(item, 'tags', locale) %></span>
+    <p />
+    <input type="submit" value="Save" />
+    <a href="/">Back</a>
+</form>
