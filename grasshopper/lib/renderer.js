@@ -99,6 +99,7 @@ RequestContext.prototype.getExtn = function() {
     var path = url.parse(this.request.url).pathname;
     if(path.match(/\.[^\/]+$/)) {
         extn = path.substring(path.lastIndexOf('.') + 1);
+        this.requestExtn = extn;
     }
 
     return extn;
