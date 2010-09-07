@@ -23,7 +23,8 @@ var fs = require('fs'),
     session = require('./session'),
     ghp = require('./ghp'),
     gh = require('./grasshopper'),
-    i18n = require('./i18n');
+    i18n = require('./i18n'),
+    base64 = require('./base64');
 
 var viewsDir = '.',
     defaultViewExtn = 'html',
@@ -103,6 +104,18 @@ RequestContext.prototype.getExtn = function() {
     }
 
     return extn;
+};
+
+RequestContext.prototype.getBasicAuth = function() {
+	var authHeader = this.request.headers.authorization;
+	if(authHeader && (authHeader.substring(0, 6) == "Basic ")) {
+		var authHeader = base64.decode(authHeader.substring(6));
+		var userPass = authHeader.split(":", 2);
+		return auth = {
+			username: userPass[0],
+			password: userPass[1]
+		};
+	}
 };
 
 RequestContext.prototype.addCookie = function(cookie) {
