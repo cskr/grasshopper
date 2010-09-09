@@ -106,16 +106,29 @@ RequestContext.prototype.getExtn = function() {
     return extn;
 };
 
-RequestContext.prototype.getBasicAuth = function() {
-	var authHeader = this.request.headers.authorization;
-	if(authHeader && (authHeader.substring(0, 6) == "Basic ")) {
-		var authHeader = base64.decode(authHeader.substring(6));
-		var userPass = authHeader.split(":", 2);
-		return auth = {
+RequestContext.prototype.getAuth = function() {
+	var authHeader = this.request.headers['authorization'];
+	if(authHeader && authHeader.substring(0, 6) == "Basic ") {
+		var credentials = base64.decode(authHeader.substring(6));
+		var userPass = credentials.split(":", 2);
+		return {
 			username: userPass[0],
 			password: userPass[1]
 		};
-	}
+	} else if(authHeader && authHeader.substring(0, 7) == "Digest ") {
+		var credentials = authHeader.substring(7);
+        var auth = {};
+        credentials.split(',').forEach(function(part) {
+            var subParts = part.trim().split('=');
+            var value = subParts[1];
+            if(value.charAt(0) == '"'
+                   && value.charAt(0) == value.charAt(value.length - 1)) {
+                value = value.substring(1, value.length - 1);
+            }
+            auth[subParts[0]] = value;
+        });
+        return auth;
+    }
 };
 
 RequestContext.prototype.addCookie = function(cookie) {
