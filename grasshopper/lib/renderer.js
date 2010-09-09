@@ -106,6 +106,16 @@ RequestContext.prototype.getExtn = function() {
     return extn;
 };
 
+RequestContext.prototype.challengeAuth = function(type, options) {
+    var challengeHeader = type + ' ';
+    Object.keys(options).forEach(function(key) {
+        challengeHeader += key + '="' + options[key] + '",';
+    });
+    challengeHeader = challengeHeader.substring(0, challengeHeader.length - 1);
+    this.headers['www-authenticate'] = challengeHeader;
+    this.renderError(401);
+};
+
 RequestContext.prototype.getAuth = function() {
 	var authHeader = this.request.headers['authorization'];
 	if(authHeader && authHeader.substring(0, 6) == "Basic ") {
