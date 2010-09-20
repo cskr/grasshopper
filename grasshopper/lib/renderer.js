@@ -119,7 +119,7 @@ RequestContext.prototype.challengeAuth = function(type, options) {
 RequestContext.prototype.getAuth = function() {
 	var authHeader = this.request.headers['authorization'];
 	if(authHeader && authHeader.substring(0, 6) == "Basic ") {
-		var credentials = base64.decode(authHeader.substring(6));
+		var credentials = base64.decode(authHeader.substring(6), this.encoding);
 		var userPass = credentials.split(":", 2);
 		return {
 			username: userPass[0],
