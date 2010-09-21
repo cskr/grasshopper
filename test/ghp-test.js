@@ -3,22 +3,40 @@ var assert = require('assert'),
 
 exports.name = 'GHP Tests';
 
+function MockResponse() {
+    this.out = '';
+}
+
+MockResponse.prototype.write = function(str, encoding) {
+    this.out += str;
+};
+
+MockResponse.prototype.end = function() {
+    this.ended = true;
+};
+
 exports.tests = {
     'Fill simple template.': function(next) {
-        var result = ghp.fill('./fixtures/ghp/simple.txt', {name: 'Chandru'}, 'utf8', './fixtures/ghp', 'txt');
-        assert.equal(result, 'Hello, Chandru!\n');
+        var response = new MockResponse();
+        ghp.fill('./fixtures/ghp/simple.txt', response, {name: 'Chandru'}, 'utf8', './fixtures/ghp', 'txt');
+        assert.equal(response.out, 'Hello, Chandru!\n');
+        assert.ok(response.ended);
         next();
     },
 
     'Fill template with include.': function(next) {
-        var result = ghp.fill('./fixtures/ghp/simple_with_include.txt', {}, 'utf8', './fixtures/ghp', 'txt');
-        assert.equal(result, 'Hello, Chandru\n!\n');
+        var response = new MockResponse();
+        ghp.fill('./fixtures/ghp/simple_with_include.txt', response, {}, 'utf8', './fixtures/ghp', 'txt');
+        assert.equal(response.out, 'Hello, Chandru\n!\n');
+        assert.ok(response.ended);
         next();
     },
 
     'Template with newline in code.': function(next) {
-        var result = ghp.fill('./fixtures/ghp/multiline_with_newline.txt', {items: ['A', 'B', 'C']}, 'utf8', './fixtures/ghp', 'txt');
-        assert.equal(result, '<li>\nA</li>\n<li>B</li>\n<li>C\n</li>\n');
+        var response = new MockResponse();
+        ghp.fill('./fixtures/ghp/multiline_with_newline.txt', response, {items: ['A', 'B', 'C']}, 'utf8', './fixtures/ghp', 'txt');
+        assert.equal(response.out, '<li>\nA</li>\n<li>B</li>\n<li>C\n</li>\n');
+        assert.ok(response.ended);
         next();
     }
 };

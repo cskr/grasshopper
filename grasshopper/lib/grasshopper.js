@@ -63,6 +63,7 @@ exports.configure = function(config) {
     multipart.configure(config);
     session.configure(config);
     i18n.configure(config);
+    ghp.configure(config);
 };
 
 exports.initModel = model.init;

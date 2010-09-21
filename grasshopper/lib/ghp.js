@@ -15,17 +15,25 @@
  */
 var fs = require('fs');
  
-var cache = {};
+var cache = {},
+    bufferSize = 8 * 1024;
 
 var helpers = [require('./helpers')];
 
-function fill(templateFile, model, encoding, viewsDir, extn, locale) {
+function fill(templateFile, response, model, encoding, viewsDir, extn, locale, streamer) {
+    if(streamer === undefined) {
+        var endResponse = true;
+        streamer = new Streamer(response, encoding);
+    }
     var template = cache[templateFile];
     if(!template) {
         var content = fs.readFileSync(templateFile, encoding);
         cache[templateFile] = template = compile(content, helpers.length + 2);
     }
-    return template(model, [new IncludeHelper(model, encoding, viewsDir, extn, locale), {locale: locale}].concat(helpers));
+    template(streamer, model, [new IncludeHelper(streamer, model, encoding, viewsDir, extn, locale), {locale: locale}].concat(helpers));
+    if(endResponse) {
+        streamer.end();
+    }
 }
 
 exports.fill = fill;
@@ -34,44 +42,49 @@ exports.addHelpers = function(newHelpers) {
     for(var i = 0; i < arguments.length; i++) {
         helpers.push(arguments[i]);
     }
-}
+};
+
+exports.configure = function(config) {
+    if(config.templateBufferSize) {
+        bufferSize = config.templateBufferSize;
+    }
+};
 
 function compile(text, helpersCount) {
-    var funcBody = "var _out = [], model = model || {};";
+    var funcBody = "model = model || {};";
 
     for(var i = 0; i < helpersCount; i++) {
+        funcBody += "helpers[" + i + "].out = out;";
         funcBody += "with(helpers[" + i + "]) {";
     }
 
-    funcBody += "with(model){ ";
+    funcBody += "with(model) {";
     var parts = text.split("<%");
     parts.forEach(function(part) {
         if(part.indexOf("%>") == -1) {
-            funcBody += "_out.push('" + escapeCode(part) + "');";
+            funcBody += "out.write('" + escapeCode(part) + "');";
         } else if(part.charAt(0) == '=') {
             var subParts = part.split('%>');
-            funcBody += "_out.push(" + subParts[0].substring(1) + ");";
+            funcBody += "out.write(" + subParts[0].substring(1) + ");";
             if(subParts.length > 1) {
-                funcBody += "_out.push('" + escapeCode(subParts[1]) + "');";
+                funcBody += "out.write('" + escapeCode(subParts[1]) + "');";
             }
         } else {
             var subParts = part.split('%>');
             funcBody += subParts[0];
             if(subParts.length > 1) {
-                funcBody += "_out.push('" + escapeCode(subParts[1]) + "');";
+                funcBody += "out.write('" + escapeCode(subParts[1]) + "');";
             }
         }
     });
 
     funcBody += "}";
 
-
     for(var i = 0; i < helpersCount; i++) {
         funcBody += "}";
     }
 
-    funcBody += "return _out.join('');"
-    return new Function("model", "helpers", funcBody);
+    return new Function("out", "model", "helpers", funcBody);
 }
 
 function escapeCode(str) {
@@ -79,7 +92,8 @@ function escapeCode(str) {
 }
 
 // Class: IncludeHelper
-function IncludeHelper(model, encoding, viewsDir, extn, locale) {
+function IncludeHelper(out, model, encoding, viewsDir, extn, locale) {
+    this.out = out;
     this.model = model;
     this.encoding = encoding;
     this.viewsDir = viewsDir;
@@ -88,5 +102,46 @@ function IncludeHelper(model, encoding, viewsDir, extn, locale) {
 }
 
 IncludeHelper.prototype.include = function(templateFile) {
-    return fill(this.viewsDir + '/' + templateFile + '.' + this.extn , this.model, this.encoding, this.viewsDir, this.extn, this.locale);
+    return fill(this.viewsDir + '/' + templateFile + '.' + this.extn , undefined, this.model,
+                this.encoding, this.viewsDir, this.extn, this.locale, this.out);
 }
+
+function Streamer(response, encoding) {
+    this._out = new Buffer(bufferSize);
+    this._response = response;
+    this._bufContentLen = 0;
+    this.encoding = encoding;
+}
+
+Streamer.prototype.write = function(str) {
+    if(str !== undefined) {
+        if(this.needsFlush(str)) {
+            this.flush();
+        }
+
+        var strBytes = Buffer.byteLength(str, this.encoding);
+        this._out.write(str, this._bufContentLen, this.encoding);
+        this._bufContentLen += strBytes;
+    }
+};
+
+Streamer.prototype.needsFlush = function(str) {
+    var strBytes = Buffer.byteLength(str, this.encoding);
+    if(strBytes + this._bufContentLen > bufferSize) {
+        return true;
+    }
+    return false;
+};
+
+Streamer.prototype.flush = function() {
+    this._response.write(this._out.toString(this.encoding, 0, this._bufContentLen));
+    this._out = new Buffer(bufferSize);
+    this._bufContentLen = 0;
+};
+
+Streamer.prototype.end = function() {
+    if(this._bufContentLen > 0) {
+        this.flush();
+    }
+    this._response.end();
+};

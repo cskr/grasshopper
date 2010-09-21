@@ -197,8 +197,8 @@ RequestContext.prototype.render = function(view, useLayout) {
         }
 
         try {
-            var content = ghp.fill(viewFile, this.model, this.encoding, viewsDir, this.extn, this.locale);
-            this.send(content);
+            this.writeHead();
+            ghp.fill(viewFile, this.response, this.model, this.encoding, viewsDir, this.extn, this.locale);
         } catch(e) {
             this.handleError(e);
         }
@@ -210,12 +210,16 @@ RequestContext.prototype.renderText = function(text) {
 };
 
 RequestContext.prototype.send = function(text) {
-    this.headers['content-type'] += '; charset=' + this.charset
-    this.response.writeHead(this.status, this.headers);
+    this.writeHead();
     if(this.request.method != 'HEAD') {
         this.response.write(text, this.encoding);
     }
     this.response.end();
+};
+
+RequestContext.prototype.writeHead = function() {
+    this.headers['content-type'] += '; charset=' + this.charset
+    this.response.writeHead(this.status, this.headers);
 };
 
 RequestContext.prototype.renderStatic = function() {
@@ -275,8 +279,8 @@ RequestContext.prototype.renderError = function(status, error) {
     fs.stat(viewFile, function(err, stats) {
         if(!err && stats.isFile()) {
             try {
-                var content = ghp.fill(viewFile, {error: error}, self.encoding, viewsDir, self.extn, this.locale);
-                self.send(content);
+                self.writeHead();
+                ghp.fill(viewFile, self.response, {error: error}, self.encoding, viewsDir, self.extn, this.locale);
             } catch(e) {
                 self.handleError(e);
             }
