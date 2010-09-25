@@ -178,7 +178,7 @@ exports.Cookie = function(name, value) {
 function dispatch(req, res, routeMatcher) {
     var urlData = url.parse(req.url, true);
     var path = stripPath(urlData.pathname);
-    var params = urlData.query;
+    var params = urlData.query || {};
     var action = routeMatcher.match(req.method, path);
     
     if(action) {
