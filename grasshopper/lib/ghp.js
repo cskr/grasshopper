@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+exports.api = {};
+
 var fs = require('fs');
  
 var cache = {},
@@ -38,7 +40,7 @@ function fill(templateFile, response, model, encoding, viewsDir, extn, locale, s
 
 exports.fill = fill;
 
-exports.addHelpers = function(newHelpers) {
+exports.api.addHelpers = function(newHelpers) {
     for(var i = 0; i < arguments.length; i++) {
         helpers.push(arguments[i]);
     }

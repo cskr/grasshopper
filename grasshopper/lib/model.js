@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-exports.init = function(modelCtor, props) {
+exports.api = {};
+
+exports.api.initModel = function(modelCtor, props) {
     modelCtor.props = {};
     for(var i = 1; i < arguments.length; i++) {
         modelCtor.props[arguments[i]] = true;
