@@ -11,14 +11,14 @@
     <% paradigms.forEach(function(paradigm) { %>
         <tr>
             <td>
-                <%= h(paradigm.name()) %>
+                <%= paradigm.name() %>
             </td>
             <td>
-                <%= h(paradigm.description()) %>
+                <%= paradigm.description() %>
             </td>
             <td>
                <a href="/paradigms/<%= paradigm._id %>/edit">Edit</a>
-               <%= postLink({href: '/paradigms/' + paradigm._id + '/delete',
+               <%h postLink({href: '/paradigms/' + paradigm._id + '/delete',
                              onclick: "if(!window.confirm('Are you sure?')) return false;",
                              text: 'Delete'}) %>
             </td>

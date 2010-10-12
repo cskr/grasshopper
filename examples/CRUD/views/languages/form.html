@@ -5,21 +5,21 @@
 <p />
 
 <label for="description">Typing:</label>
-<%= booleanCheckbox({name: 'language.static', state: language.static()}) %> Static
-<%= booleanCheckbox({name: 'language.dynamic', state: language.dynamic()}) %> Dynamic
+<%h booleanCheckbox({name: 'language.static', state: language.static()}) %> Static
+<%h booleanCheckbox({name: 'language.dynamic', state: language.dynamic()}) %> Dynamic
 <span style="color: red"><%= error(language, 'typing') %></span>
 
 <p />
 
 <label for="execution">Execution Environment:</label>
-<%= collectionSelect({name: 'language.executionId', id:'execution', items: executions, value: language.executionId(),
+<%h collectionSelect({name: 'language.executionId', id:'execution', items: executions, value: language.executionId(),
                      valueProp: 'id', labelProp: 'name', prompt: '-- Select --'}) %>
 <span style="color: red"><%= error(language, 'executionId', locale) %></span>
 
 <p />
 
 <label for="paradigms">Paradigms:</label>
-<%= collectionSelect({name: 'language.*paradigmIds', id:'paradigms', items: paradigms, value: language.paradigmIds(),
+<%h collectionSelect({name: 'language.*paradigmIds', id:'paradigms', items: paradigms, value: language.paradigmIds(),
                      valueProp: 'id', labelProp: 'name', size: 4, multiple: 'multiple'}) %>
 <span style="color: red"><%= error(language, 'paradigmIds', locale) %></span>
 

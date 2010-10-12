@@ -49,7 +49,7 @@ exports.tests = {
     },
 
     'HTML escape.': function(next) {
-        var result = helpers.h('Hello, <i>Chandru</i>!');
+        var result = helpers.escapeHTML('Hello, <i>Chandru</i>!');
         assert.equal(result, 'Hello, &lt;i&gt;Chandru&lt;/i&gt;!');
         next();
     }

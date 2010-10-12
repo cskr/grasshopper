@@ -38,5 +38,13 @@ exports.tests = {
         assert.equal(response.out, '<li>\nA</li>\n<li>B</li>\n<li>C\n</li>\n');
         assert.ok(response.ended);
         next();
+    },
+
+    'Template with escaped HTML.': function(next) {
+        var response = new MockResponse();
+        ghp.fill('./fixtures/ghp/escaped_html.txt', response, {}, 'utf8', './fixtures/ghp', 'txt');
+        assert.equal(response.out, '&lt;b&gt;ABC&lt;/b&gt;\n');
+        assert.ok(response.ended);
+        next();
     }
 };

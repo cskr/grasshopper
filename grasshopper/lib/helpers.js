@@ -148,7 +148,7 @@ exports.collectionSelect = function(attribs) {
     return tag + '\n' + endTag('select');
 };
 
-exports.h = function(html) {
+exports.escapeHTML = function(html) {
     if(html) {
         return html.
             replace(/&/gmi, '&amp;').

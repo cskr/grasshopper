@@ -67,6 +67,13 @@ function compile(text, helpersCount) {
             funcBody += "out.write('" + escapeCode(part) + "');";
         } else if(part.charAt(0) == '=') {
             var subParts = part.split('%>');
+            funcBody += "out.write(escapeHTML(" + subParts[0].substring(1)
+                        + "));";
+            if(subParts.length > 1) {
+                funcBody += "out.write('" + escapeCode(subParts[1]) + "');";
+            }
+        } else if(part.charAt(0) == 'h') {
+            var subParts = part.split('%>');
             funcBody += "out.write(" + subParts[0].substring(1) + ");";
             if(subParts.length > 1) {
                 funcBody += "out.write('" + escapeCode(subParts[1]) + "');";

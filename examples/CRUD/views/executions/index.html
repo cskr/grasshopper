@@ -11,14 +11,14 @@
     <% executions.forEach(function(execution) { %>
         <tr>
             <td>
-                <%= h(execution.name()) %>
+                <%= execution.name() %>
             </td>
             <td>
-                <%= h(execution.description()) %>
+                <%= execution.description() %>
             </td>
             <td>
                <a href="/executions/<%= execution._id %>/edit">Edit</a>
-               <%= postLink({href: '/executions/' + execution._id + '/delete',
+               <%h postLink({href: '/executions/' + execution._id + '/delete',
                              onclick: "if(!window.confirm('Are you sure?')) return false;",
                              text: 'Delete'}) %>
             </td>

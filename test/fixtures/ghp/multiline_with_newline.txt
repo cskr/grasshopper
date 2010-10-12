@@ -1,3 +1,3 @@
 <li>
-<%= items.join('</li>\n<li>') %>
+<%h items.join('</li>\n<li>') %>
 </li>
