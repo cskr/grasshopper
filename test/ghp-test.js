@@ -46,5 +46,13 @@ exports.tests = {
         assert.equal(response.out, '&lt;b&gt;ABC&lt;/b&gt;\n');
         assert.ok(response.ended);
         next();
+    },
+
+    'Multi-line with single quote.': function(next) {
+        var response = new MockResponse();
+        ghp.fill('./fixtures/ghp/with_quote.txt', response, {}, 'utf8', './fixtures/ghp', 'txt');
+        assert.equal(response.out, 'Quoted: \'line-1\'\n\'line-2\'\n');
+        assert.ok(response.ended);
+        next();
     }
 };

@@ -97,7 +97,7 @@ function compile(text, helpersCount) {
 }
 
 function escapeCode(str) {
-    return str.replace("'", "\\'").split('\r').join('\\r').split('\n').join('\\n');
+    return str.split("'").join("\\'").split('\r').join('\\r').split('\n').join('\\n');
 }
 
 // Class: IncludeHelper
