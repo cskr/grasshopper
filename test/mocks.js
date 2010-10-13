@@ -30,12 +30,31 @@ MockRequest.prototype.setEncoding = function(encoding) {
 };
 
 function MockResponse() {
+    this.writable = true;
 }
+require('sys').inherits(MockResponse, EventEmitter);
 
-MockResponse.prototype.writeHead = function(status, headers) {
+MockResponse.prototype.writeHead = function(statusCode, reasonPhrase, headers) {
+    this.statusCode = statusCode;
+    this.reasonPhrase = reasonPhrase;
+    this.headers = headers;
 };
 
-MockResponse.prototype.end = function() {
+MockResponse.prototype.write = function(chunk, encoding) {
+    this.chunks = this.chunks || [];
+    this.chunks.push(chunk);
+    this.encodings = this.encodings || [];
+    this.encodings.push(encoding);
+};
+
+MockResponse.prototype.end = function(data, encoding) {
+    this.endData = data;
+    this.endEncoding = encoding;
+    this.writable = false;
+};
+
+MockResponse.prototype.destroy = function() {
+    this.writable = false;
 };
 
 exports.MockRequest = MockRequest;
