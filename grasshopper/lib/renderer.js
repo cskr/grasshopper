@@ -395,26 +395,44 @@ RequestContext.prototype.disableCache = function() {
 exports.RequestContext = RequestContext;
 
 function sendStatic(staticFile, stats, ctx) {
-    if(satisfiesConditions(stats, ctx)) {
-        ctx.headers['last-modified'] = stats.mtime.toUTCString();
-        ctx.headers['etag'] = stats.mtime.getTime();
-        var range;
-        if(ctx.request.headers['range'] && (range = parseRange(ctx, stats))) {;
-            ctx.status = 206;
-            ctx.headers['content-length'] = range[1] - range[0] + 1;
-            ctx.headers['content-range'] = 'bytes ' + range[0] + '-' + range[1] + '/' + stats.size;
-            var stream = fs.createReadStream(staticFile, {start: range[0], end: range[1]});
-        } else {
-            ctx.headers['content-length'] = stats.size;
-            var stream = fs.createReadStream(staticFile);
-        }
+    function sendBytes() {
+		if(satisfiesConditions(stats, ctx)) {
+		    ctx.headers['last-modified'] = stats.mtime.toUTCString();
+		    ctx.headers['etag'] = stats.mtime.getTime();
+		    var range;
+		    if(ctx.request.headers['range'] && (range = parseRange(ctx, stats))) {;
+		        ctx.status = 206;
+		        ctx.headers['content-length'] = range[1] - range[0] + 1;
+		        ctx.headers['content-range'] = 'bytes ' + range[0] + '-' + range[1] + '/' + stats.size;
+		        var stream = fs.createReadStream(staticFile, {start: range[0], end: range[1]});
+		    } else {
+		        ctx.headers['content-length'] = stats.size;
+		        var stream = fs.createReadStream(staticFile);
+		    }
 
-        ctx.response.writeHead(ctx.status, ctx.headers);
-        if(ctx.request.method == 'GET') {
-            sys.pump(stream, ctx.response);
-        } else {
-            ctx.response.end();
-        }
+		    ctx.response.writeHead(ctx.status, ctx.headers);
+		    if(ctx.request.method == 'GET') {
+		        sys.pump(stream, ctx.response);
+		    } else {
+		        ctx.response.end();
+		    }
+		}
+	}
+
+    var acceptHeader = ctx.request.headers['accept-encoding'];
+    if(acceptHeader && acceptHeader.indexOf('gzip') >= 0) {
+        fs.stat(staticFile + '.gz', function(err, gzipStats) {
+            if(!err) {
+                ctx.headers['content-encoding'] = 'gzip';
+                staticFile = staticFile + '.gz';
+                stats = gzipStats;
+                sendBytes();
+            } else {
+                sendBytes();
+            }
+        });
+    } else {
+        sendBytes();
     }
 }
 
