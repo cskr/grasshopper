@@ -12,6 +12,8 @@ Features
 * Filters for intercepting requests.
 * Supports i18n out of the box.
 * Handles updation and validation of models from forms.
+* Supports on the fly Gzip compression of responses.
+* Static files can also be pre-compressed to save compression on each request.
 * Supports flash messages.
 * Allows adding view helpers to enable smarter views.
 * Layout and "include" support for views.
@@ -55,7 +57,8 @@ Arguments passed as part of the URL can be obtained with an additional parameter
 ### Template File Format (GHP - GrassHopper Pages)
 
 1. Text inside `<% and %>` are evaluated as Javacript code.
-2. Text inside `<%= and %>` are evaluated as Javascript code and its result is included into the output.
+2. Text inside `<%= and %>` are evaluated as Javascript code and its result is included into the output after escaping HTML.
+3. Text inside `<%h and %>` are evaluated as Javascript code and its result is included into the output without any modification.
 ***********
 
 1. Create a file named `greeting.html` in your application's directory with the following content.  This would act as your template file.
