@@ -85,6 +85,10 @@ exports.api.getSecureController = function(method, path) {
     return secureRoutes[method + ':' + path];
 };
 
+exports.api.servers = function() {
+    return servers;
+};
+
 function redirectSecure() {
     var hostHeader = this.request.headers['host'];
     var redirectHost = hostHeader;
