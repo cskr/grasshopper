@@ -123,27 +123,25 @@ function Streamer(response, encoding) {
 }
 
 Streamer.prototype.write = function(str) {
-    if(str !== undefined) {
-        if(this.needsFlush(str)) {
-            this.flush();
-        }
+    var tmpBuffer = new Buffer(str),
+        currentOffset = 0;
 
-        var strBytes = Buffer.byteLength(str, this.encoding);
-        this._out.write(str, this._bufContentLen, this.encoding);
-        this._bufContentLen += strBytes;
+    while(this._bufContentLen +
+            (tmpBuffer.length - currentOffset) >= bufferSize) {
+        tmpBuffer.copy(this._out, this._bufContentLen, currentOffset,
+                        currentOffset + bufferSize);
+        currentOffset += bufferSize;
+        this._bufContentLen += bufferSize;
+        this.flush();
     }
-};
 
-Streamer.prototype.needsFlush = function(str) {
-    var strBytes = Buffer.byteLength(str, this.encoding);
-    if(strBytes + this._bufContentLen > bufferSize) {
-        return true;
-    }
-    return false;
+    tmpBuffer.copy(this._out, this._bufContentLen, currentOffset);
+    this._bufContentLen += tmpBuffer.length - currentOffset;
 };
 
 Streamer.prototype.flush = function() {
-    this._response.write(this._out.toString(this.encoding, 0, this._bufContentLen));
+    this._response.write(this._out.toString(this.encoding, 0,
+        this._bufContentLen));
     this._out = new Buffer(bufferSize);
     this._bufContentLen = 0;
 };
