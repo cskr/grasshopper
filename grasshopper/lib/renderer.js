@@ -261,7 +261,7 @@ RequestContext.prototype.sendFile = function(file, fileName) {
                             ? mime.mimes[extn] 
                             : 'application/octet-stream';
 
-            self.headers['content-disposition'] = 'attachment; filename=' + fileName;
+            self.headers['content-disposition'] = 'attachment; filename="' + fileName + '"';
             sendStatic(file, stats, self);
         }
     });
