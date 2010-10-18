@@ -32,8 +32,8 @@ Features
 Hello World
 -----------
 
-1. Install npm - `wget -qO- http://npmjs.org/install.sh | sudo sh`.
-2. Install grasshopper - `sudo npm install grasshopper`.
+1. [Install npm](http://github.com/isaacs/npm#readme).
+2. Install grasshopper - `npm install grasshopper`.
 3. Create a directory for your application.
 4. Create a file named `hello.js` in your application's directory with the following content.
 
