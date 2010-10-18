@@ -54,5 +54,13 @@ exports.tests = {
         assert.equal(response.out, 'Quoted: \'line-1\'\n\'line-2\'\n');
         assert.ok(response.ended);
         next();
+    },
+
+    'Template with undefinde value.': function(next) {
+        var response = new MockResponse();
+        ghp.fill('./fixtures/ghp/template_with_undefined.txt', response, {}, 'utf8', './fixtures/ghp', 'txt');
+        assert.equal(response.out, '\n');
+        assert.ok(response.ended);
+        next();
     }
 };

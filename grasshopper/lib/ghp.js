@@ -123,20 +123,22 @@ function Streamer(response, encoding) {
 }
 
 Streamer.prototype.write = function(str) {
-    var tmpBuffer = new Buffer(str),
-        currentOffset = 0;
+    if(str !== undefined) {
+        var tmpBuffer = new Buffer(str),
+            currentOffset = 0;
 
-    while(this._bufContentLen +
-            (tmpBuffer.length - currentOffset) >= bufferSize) {
-        tmpBuffer.copy(this._out, this._bufContentLen, currentOffset,
-                        currentOffset + bufferSize);
-        currentOffset += bufferSize;
-        this._bufContentLen += bufferSize;
-        this.flush();
+        while(this._bufContentLen +
+                (tmpBuffer.length - currentOffset) >= bufferSize) {
+            tmpBuffer.copy(this._out, this._bufContentLen, currentOffset,
+                            currentOffset + bufferSize);
+            currentOffset += bufferSize;
+            this._bufContentLen += bufferSize;
+            this.flush();
+        }
+
+        tmpBuffer.copy(this._out, this._bufContentLen, currentOffset);
+        this._bufContentLen += tmpBuffer.length - currentOffset;
     }
-
-    tmpBuffer.copy(this._out, this._bufContentLen, currentOffset);
-    this._bufContentLen += tmpBuffer.length - currentOffset;
 };
 
 Streamer.prototype.flush = function() {
