@@ -230,6 +230,13 @@ RequestContext.prototype.renderStatic = function() {
         return;
     }
 
+    if(this.request.url.indexOf('/../') >= 0) {
+        this.extn = defaultViewExtn;
+        this.headers['content-type'] = mime.mimes[defaultViewExtn];
+        this.renderError(403);
+        return;
+    }
+
     var staticFile = staticsDir + decodeURIComponent(url.parse(this.request.url).pathname);
     var self = this;
     fs.stat(staticFile, function(err, stats) {
