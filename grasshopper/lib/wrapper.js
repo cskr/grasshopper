@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-var sys = require('sys'),
+var util = require('util'),
     events = require('events');
 
 exports.api = {};
@@ -36,7 +36,7 @@ function ResponseWrapper(response) {
     });
 }
 
-sys.inherits(ResponseWrapper, events.EventEmitter);
+util.inherits(ResponseWrapper, events.EventEmitter);
 
 ResponseWrapper.prototype.writeHead = function(statusCode, reasonPhrase,
                                                     headers) {

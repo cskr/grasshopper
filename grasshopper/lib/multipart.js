@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 var fs = require('fs'),
-    sys = require('sys'),
     uuid = require('./uuid'),
     formidable = require('formidable');
 

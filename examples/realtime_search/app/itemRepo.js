@@ -1,12 +1,12 @@
 var EventEmitter = require('events').EventEmitter,
-    sys = require('sys');
+    util = require('util');
 
 function ItemRepo() {
     EventEmitter.call(this);
     this.items = {};
 }
 
-sys.inherits(ItemRepo, EventEmitter);
+util.inherits(ItemRepo, EventEmitter);
 
 ItemRepo.prototype.add = function(item) {
     var self = this;

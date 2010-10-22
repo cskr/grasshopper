@@ -15,7 +15,7 @@
  */
 var fs = require('fs'),
     url = require('url'),
-    sys = require('sys'),
+    util = require('util'),
     crypto = require('crypto'),
     Buffer = require('buffer').Buffer,
     mime = require('./mime'),
@@ -421,7 +421,7 @@ function sendStatic(staticFile, stats, ctx) {
 
 		    ctx.response.writeHead(ctx.status, ctx.headers);
 		    if(ctx.request.method == 'GET') {
-		        sys.pump(stream, ctx.response);
+		        util.pump(stream, ctx.response);
 		    } else {
 		        ctx.response.end();
 		    }

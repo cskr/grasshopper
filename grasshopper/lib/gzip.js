@@ -15,7 +15,7 @@
  */
 exports.api = {};
 
-var sys = require('sys'),
+var util = require('util'),
     ResponseWrapper = require('./wrapper.js').api.ResponseWrapper
 try {
     var compress = require('compress');
@@ -39,7 +39,7 @@ function GzipResponseWrapper(response, compressionLevel) {
     });
 }
 
-sys.inherits(GzipResponseWrapper, ResponseWrapper);
+util.inherits(GzipResponseWrapper, ResponseWrapper);
 
 GzipResponseWrapper.prototype.writeHead = function(statusCode, reasonPhrase,
                                                 headers) {

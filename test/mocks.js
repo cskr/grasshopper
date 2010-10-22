@@ -23,7 +23,7 @@ function MockRequest(method, url, headers) {
    this.url = url;
    this.headers = headers;
 }
-require('sys').inherits(MockRequest, EventEmitter);
+require('util').inherits(MockRequest, EventEmitter);
 
 MockRequest.prototype.setEncoding = function(encoding) {
     this.encoding = encoding;
@@ -32,7 +32,7 @@ MockRequest.prototype.setEncoding = function(encoding) {
 function MockResponse() {
     this.writable = true;
 }
-require('sys').inherits(MockResponse, EventEmitter);
+require('util').inherits(MockResponse, EventEmitter);
 
 MockResponse.prototype.writeHead = function(statusCode, reasonPhrase, headers) {
     this.statusCode = statusCode;
