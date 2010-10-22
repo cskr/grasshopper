@@ -51,6 +51,10 @@ exports.tests = {
     'HTML escape.': function(next) {
         var result = helpers.escapeHTML('Hello, <i>Chandru</i>!');
         assert.equal(result, 'Hello, &lt;i&gt;Chandru&lt;/i&gt;!');
+        result = helpers.escapeHTML(10);
+        assert.equal(result, '10');
+        result = helpers.escapeHTML({toString: function() { return 'Hi'; }});
+        assert.equal(result, 'Hi');
         next();
     }
 };

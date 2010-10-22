@@ -150,7 +150,7 @@ exports.collectionSelect = function(attribs) {
 
 exports.escapeHTML = function(html) {
     if(html) {
-        return html.
+        return String(html).
             replace(/&/gmi, '&amp;').
             replace(/"/gmi, '&quot;').
             replace(/>/gmi, '&gt;').
