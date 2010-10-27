@@ -182,9 +182,11 @@ RequestContext.prototype.render = function(view, useLayout) {
     } else if(typeof view == 'function') {
         this.response.writeHead(this.status, this.headers);
         if(this.request.method != 'HEAD') {
-            view();
+            var self = this;
+            view(function() {
+                self.response.end();
+            });
         }
-        this.response.end();
     } else {
         this.model['flash'] = this.flash;
         if(useLayout === undefined) {
