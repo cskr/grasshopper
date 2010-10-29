@@ -1,0 +1,3 @@
+<% include('updated_include', function(model) {
+    model.name = 'Chandru';
+}); %>

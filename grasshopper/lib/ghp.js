@@ -110,9 +110,14 @@ function IncludeHelper(out, model, encoding, viewsDir, extn, locale) {
     this.locale = locale;
 }
 
-IncludeHelper.prototype.include = function(templateFile) {
-    return fill(this.viewsDir + '/' + templateFile + '.' + this.extn , undefined, this.model,
-                this.encoding, this.viewsDir, this.extn, this.locale, this.out);
+IncludeHelper.prototype.include = function(templateFile, updateModel) {
+    if(updateModel) {
+        updateModel(this.model);
+    }
+
+    return fill(this.viewsDir + '/' + templateFile + '.' + this.extn ,
+                undefined, this.model, this.encoding, this.viewsDir, this.extn,
+                this.locale, this.out);
 }
 
 function Streamer(response, encoding) {

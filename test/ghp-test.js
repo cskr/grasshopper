@@ -32,6 +32,14 @@ exports.tests = {
         next();
     },
 
+    'Fill template with include and updation function.': function(next) {
+        var response = new MockResponse();
+        ghp.fill('./fixtures/ghp/include_with_updater.txt', response, {}, 'utf8', './fixtures/ghp', 'txt');
+        assert.equal(response.out, 'Hello, Chandru!\n\n');
+        assert.ok(response.ended);
+        next();
+    },
+
     'Template with newline in code.': function(next) {
         var response = new MockResponse();
         ghp.fill('./fixtures/ghp/multiline_with_newline.txt', response, {items: ['A', 'B', 'C']}, 'utf8', './fixtures/ghp', 'txt');
