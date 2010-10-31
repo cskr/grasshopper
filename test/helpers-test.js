@@ -2,7 +2,8 @@ var gh = require('../grasshopper'),
     helpers = require('../grasshopper/lib/helpers'),
     assert = require('assert');
 
-exports.name = 'Helpers Tests';
+var suite = {name: 'Helpers Tests'};
+exports.suite = suite;
 
 function Person() {
 }
@@ -15,7 +16,7 @@ Person.prototype.validate = function() {
     this.validateNumeric('age');
 }
 
-exports.tests = {
+suite.tests = {
     'Single error.': function(next) {
         var p = new Person();
         p.update({});
@@ -58,3 +59,6 @@ exports.tests = {
         next();
     }
 };
+
+if(process.argv[1] == __filename)
+    require('./ghunit').test(suite);

@@ -3,9 +3,10 @@ var RequestContext = require('../grasshopper/lib/renderer').RequestContext,
     mocks = require('./mocks'),
     base64 = require('../grasshopper/lib/base64');
 
-exports.name = 'Authentication Tests'
+var suite = {name: 'Authentication Tests'};
+exports.suite = suite;
 
-exports.tests = {
+suite.tests = {
     'Basic getAuth().': function(next) {
         var req = new mocks.MockRequest('GET', '/', {
             authorization: 'Basic ' + base64.encode('Chandru:Pass')
@@ -41,3 +42,6 @@ exports.tests = {
         next();
     }
 };
+
+if(process.argv[1] == __filename)
+    require('./ghunit').test(suite);

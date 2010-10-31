@@ -1,9 +1,10 @@
 var i18n = require('../grasshopper/lib/i18n'),
     assert = require('assert');
 
-exports.name = 'i18n Tests';
+var suite = {name: 'i18n Tests'};
+exports.suite = suite;
 
-exports.tests = {
+suite.tests = {
     'Choose right locale.': function(next) {
         locales = {
             'en-gb': {
@@ -49,3 +50,6 @@ exports.tests = {
         next();
     }
 };
+
+if(process.argv[1] == __filename)
+    require('./ghunit').test(suite);

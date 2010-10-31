@@ -2,9 +2,10 @@ var gzip = require('../grasshopper/lib/gzip'),
     mocks = require('./mocks'),
     assert = require('assert');
 
-exports.name = 'Gzip Tests';
+var suite = {name: 'Gzip Tests'};
+exports.suite = suite;
 
-exports.tests = {
+suite.tests = {
     'Normal compression.': function(next) {
         var res = new mocks.MockResponse(),
             wrapped = new gzip.GzipResponseWrapper(res);
@@ -34,3 +35,6 @@ exports.tests = {
         next();
     }
 }
+
+if(process.argv[1] == __filename)
+    require('./ghunit').test(suite);

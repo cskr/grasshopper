@@ -1,7 +1,8 @@
 var gh = require('../grasshopper'),
     assert = require('assert');
 
-exports.name = 'Model Tests';
+var suite = {name: 'Model Tests'};
+exports.suite = suite;
 
 function Person() {
 }
@@ -15,7 +16,7 @@ Person.prototype.validate = function(next) {
     this.validatePattern('someProp', /^\d.*/);
 }
 
-exports.tests = {
+suite.tests = {
     'Update property without converter.': function(next) {
         var p = new Person().update({name: 'Chandru'});
         assert.equal(p.name(), 'Chandru');
@@ -91,3 +92,6 @@ exports.tests = {
         next();
     }
 };
+
+if(process.argv[1] == __filename)
+    require('./ghunit').test(suite);

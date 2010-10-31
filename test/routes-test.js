@@ -1,12 +1,13 @@
 var routes = require('../grasshopper/lib/routes'),
     assert = require('assert');
 
-exports.name = 'Routing Tests';
+var suite = {name: 'Routing Tests'};
+exports.suite = suite;
 
 function dummy() {
 }
 
-exports.tests = {
+suite.tests = {
     'GET route.': function(next) {
         routes.api.get('/', dummy);
         assert.equal(routes.api.getController('get', '/'), dummy);
@@ -60,3 +61,6 @@ exports.tests = {
     }
 
 };
+
+if(process.argv[1] == __filename)
+    require('./ghunit').test(suite);

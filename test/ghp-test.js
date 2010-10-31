@@ -1,7 +1,8 @@
 var assert = require('assert'),
     ghp = require('../grasshopper/lib/ghp');
 
-exports.name = 'GHP Tests';
+var suite = {name: 'GHP Tests'};
+exports.suite = suite;
 
 function MockResponse() {
     this.out = '';
@@ -15,7 +16,7 @@ MockResponse.prototype.end = function() {
     this.ended = true;
 };
 
-exports.tests = {
+suite.tests = {
     'Fill simple template.': function(next) {
         var response = new MockResponse();
         ghp.fill('./fixtures/ghp/simple.txt', response, {name: 'Chandru'}, 'utf8', './fixtures/ghp', 'txt');
@@ -72,3 +73,6 @@ exports.tests = {
         next();
     }
 };
+
+if(process.argv[1] == __filename)
+    require('./ghunit').test(suite);

@@ -2,9 +2,10 @@ var wrapper = require('../grasshopper/lib/wrapper'),
     mocks = require('./mocks'),
     assert = require('assert');
 
-exports.name = 'Wrapper Tests';
+var suite = {name: 'Wrapper Tests'};
+exports.suite = suite;
 
-exports.tests = {
+suite.tests = {
     'writeHead.': function(next) {
         var res = new mocks.MockResponse(),
             wrapped = new wrapper.api.ResponseWrapper(res);
@@ -71,3 +72,6 @@ exports.tests = {
         next();
     }
 }
+
+if(process.argv[1] == __filename)
+    require('./ghunit').test(suite);
