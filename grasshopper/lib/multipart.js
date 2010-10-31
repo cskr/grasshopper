@@ -15,6 +15,7 @@
  */
 var fs = require('fs'),
     uuid = require('./uuid'),
+    ParamParser = require('./params').ParamParser,
     formidable = require('formidable');
 
 var maxUploadSize = undefined,
@@ -41,13 +42,17 @@ exports.parse = function(context, callback) {
         if(err) {
             context.handleError(err);
         } else {
+            var parser = new ParamParser();
+
             for(var i in fields) {
-                context.params[i] = fields[i]
+                parser.addParam(i, fields[i]);
             }
 
             for(var i in files) {
-                context.params[i] = files[i];
+                parser.addParam(i, files[i]);
             }
+
+            context.params = parser.getParams();
             callback();
         }
     });
