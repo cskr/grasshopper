@@ -38,23 +38,25 @@ exports.parse = function(context, callback) {
 
     var form = new formidable.IncomingForm();
     form.uploadDir = uploadsDir;
-    form.parse(req, function(err, fields, files) {
-        if(err) {
-            context.handleError(err);
-        } else {
-            var parser = new ParamParser();
+    var parser = new ParamParser();
 
-            for(var i in fields) {
-                parser.addParam(i, fields[i]);
-            }
-
-            for(var i in files) {
-                parser.addParam(i, files[i]);
-            }
-
-            context.params = parser.getParams();
-            callback();
-        }
+    form.on('field', function(name, value) {
+        parser.addParam(name, value);
     });
+
+    form.on('file', function(name, file) {
+        parser.addParam(name, file);
+    });
+
+    form.on('error', function(err) {
+        context.handleError(err);
+    });
+
+    form.on('end', function() {
+        context.params = parser.getParams();
+        callback();
+    });
+
+    form.parse(req);
 };
 
