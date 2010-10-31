@@ -1,4 +1,4 @@
-var routes = require('../grasshopper/lib/routes'),
+var routes = require('../../grasshopper/lib/routes'),
     assert = require('assert');
 
 var suite = {name: 'Routing Tests'};
@@ -63,4 +63,4 @@ suite.tests = {
 };
 
 if(process.argv[1] == __filename)
-    require('./ghunit').test(suite);
+    require('../common/ghunit').test(suite);

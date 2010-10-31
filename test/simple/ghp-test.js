@@ -1,5 +1,5 @@
 var assert = require('assert'),
-    ghp = require('../grasshopper/lib/ghp');
+    ghp = require('../../grasshopper/lib/ghp');
 
 var suite = {name: 'GHP Tests'};
 exports.suite = suite;
@@ -19,7 +19,7 @@ MockResponse.prototype.end = function() {
 suite.tests = {
     'Fill simple template.': function(next) {
         var response = new MockResponse();
-        ghp.fill('./fixtures/ghp/simple.txt', response, {name: 'Chandru'}, 'utf8', './fixtures/ghp', 'txt');
+        ghp.fill('../fixtures/ghp/simple.txt', response, {name: 'Chandru'}, 'utf8', '../fixtures/ghp', 'txt');
         assert.equal(response.out, 'Hello, Chandru!\n');
         assert.ok(response.ended);
         next();
@@ -27,7 +27,7 @@ suite.tests = {
 
     'Fill template with include.': function(next) {
         var response = new MockResponse();
-        ghp.fill('./fixtures/ghp/simple_with_include.txt', response, {}, 'utf8', './fixtures/ghp', 'txt');
+        ghp.fill('../fixtures/ghp/simple_with_include.txt', response, {}, 'utf8', '../fixtures/ghp', 'txt');
         assert.equal(response.out, 'Hello, Chandru\n!\n');
         assert.ok(response.ended);
         next();
@@ -35,7 +35,7 @@ suite.tests = {
 
     'Fill template with include and updation function.': function(next) {
         var response = new MockResponse();
-        ghp.fill('./fixtures/ghp/include_with_updater.txt', response, {}, 'utf8', './fixtures/ghp', 'txt');
+        ghp.fill('../fixtures/ghp/include_with_updater.txt', response, {}, 'utf8', '../fixtures/ghp', 'txt');
         assert.equal(response.out, 'Hello, Chandru!\n\n');
         assert.ok(response.ended);
         next();
@@ -43,7 +43,7 @@ suite.tests = {
 
     'Template with newline in code.': function(next) {
         var response = new MockResponse();
-        ghp.fill('./fixtures/ghp/multiline_with_newline.txt', response, {items: ['A', 'B', 'C']}, 'utf8', './fixtures/ghp', 'txt');
+        ghp.fill('../fixtures/ghp/multiline_with_newline.txt', response, {items: ['A', 'B', 'C']}, 'utf8', '../fixtures/ghp', 'txt');
         assert.equal(response.out, '<li>\nA</li>\n<li>B</li>\n<li>C\n</li>\n');
         assert.ok(response.ended);
         next();
@@ -51,7 +51,7 @@ suite.tests = {
 
     'Template with escaped HTML.': function(next) {
         var response = new MockResponse();
-        ghp.fill('./fixtures/ghp/escaped_html.txt', response, {}, 'utf8', './fixtures/ghp', 'txt');
+        ghp.fill('../fixtures/ghp/escaped_html.txt', response, {}, 'utf8', '../fixtures/ghp', 'txt');
         assert.equal(response.out, '&lt;b&gt;ABC&lt;/b&gt;\n');
         assert.ok(response.ended);
         next();
@@ -59,7 +59,7 @@ suite.tests = {
 
     'Multi-line with single quote.': function(next) {
         var response = new MockResponse();
-        ghp.fill('./fixtures/ghp/with_quote.txt', response, {}, 'utf8', './fixtures/ghp', 'txt');
+        ghp.fill('../fixtures/ghp/with_quote.txt', response, {}, 'utf8', '../fixtures/ghp', 'txt');
         assert.equal(response.out, 'Quoted: \'line-1\'\n\'line-2\'\n');
         assert.ok(response.ended);
         next();
@@ -67,7 +67,7 @@ suite.tests = {
 
     'Template with undefinde value.': function(next) {
         var response = new MockResponse();
-        ghp.fill('./fixtures/ghp/template_with_undefined.txt', response, {}, 'utf8', './fixtures/ghp', 'txt');
+        ghp.fill('../fixtures/ghp/template_with_undefined.txt', response, {}, 'utf8', '../fixtures/ghp', 'txt');
         assert.equal(response.out, '\n');
         assert.ok(response.ended);
         next();
@@ -75,4 +75,4 @@ suite.tests = {
 };
 
 if(process.argv[1] == __filename)
-    require('./ghunit').test(suite);
+    require('../common/ghunit').test(suite);

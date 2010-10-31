@@ -1,5 +1,5 @@
-var gh = require('../grasshopper'),
-    helpers = require('../grasshopper/lib/helpers'),
+var gh = require('../../grasshopper'),
+    helpers = require('../../grasshopper/lib/helpers'),
     assert = require('assert');
 
 var suite = {name: 'Helpers Tests'};
@@ -61,4 +61,4 @@ suite.tests = {
 };
 
 if(process.argv[1] == __filename)
-    require('./ghunit').test(suite);
+    require('../common/ghunit').test(suite);

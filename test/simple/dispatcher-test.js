@@ -1,7 +1,7 @@
-var dispatcher = require('../grasshopper/lib/dispatcher'),
+var dispatcher = require('../../grasshopper/lib/dispatcher'),
     http = require('http'),
     assert = require('assert'),
-    mocks = require('./mocks');
+    mocks = require('../common/mocks');
 
 var suite = {name: 'Dispatcher Tests'};
 exports.suite = suite;
@@ -95,4 +95,4 @@ function invoke(method, path, headers, body, route, controller) {
 }
 
 if(process.argv[1] == __filename)
-    require('./ghunit').test(suite);
+    require('../common/ghunit').test(suite);

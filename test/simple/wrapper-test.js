@@ -1,5 +1,5 @@
-var wrapper = require('../grasshopper/lib/wrapper'),
-    mocks = require('./mocks'),
+var wrapper = require('../../grasshopper/lib/wrapper'),
+    mocks = require('../common/mocks'),
     assert = require('assert');
 
 var suite = {name: 'Wrapper Tests'};
@@ -74,4 +74,4 @@ suite.tests = {
 }
 
 if(process.argv[1] == __filename)
-    require('./ghunit').test(suite);
+    require('../common/ghunit').test(suite);

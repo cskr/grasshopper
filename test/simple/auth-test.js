@@ -1,7 +1,7 @@
-var RequestContext = require('../grasshopper/lib/renderer').RequestContext,
+var RequestContext = require('../../grasshopper/lib/renderer').RequestContext,
     assert = require('assert'),
-    mocks = require('./mocks'),
-    base64 = require('../grasshopper/lib/base64');
+    mocks = require('../common/mocks'),
+    base64 = require('../../grasshopper/lib/base64');
 
 var suite = {name: 'Authentication Tests'};
 exports.suite = suite;
@@ -44,4 +44,4 @@ suite.tests = {
 };
 
 if(process.argv[1] == __filename)
-    require('./ghunit').test(suite);
+    require('../common/ghunit').test(suite);

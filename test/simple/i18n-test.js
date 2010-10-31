@@ -1,4 +1,4 @@
-var i18n = require('../grasshopper/lib/i18n'),
+var i18n = require('../../grasshopper/lib/i18n'),
     assert = require('assert');
 
 var suite = {name: 'i18n Tests'};
@@ -52,4 +52,4 @@ suite.tests = {
 };
 
 if(process.argv[1] == __filename)
-    require('./ghunit').test(suite);
+    require('../common/ghunit').test(suite);

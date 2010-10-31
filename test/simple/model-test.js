@@ -1,4 +1,4 @@
-var gh = require('../grasshopper'),
+var gh = require('../../grasshopper'),
     assert = require('assert');
 
 var suite = {name: 'Model Tests'};
@@ -94,4 +94,4 @@ suite.tests = {
 };
 
 if(process.argv[1] == __filename)
-    require('./ghunit').test(suite);
+    require('../common/ghunit').test(suite);
