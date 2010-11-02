@@ -220,7 +220,9 @@ RequestContext.prototype.send = function(text) {
 };
 
 RequestContext.prototype.writeHead = function() {
-    this.headers['content-type'] += '; charset=' + this.charset
+    if(this.charset) {
+        this.headers['content-type'] += '; charset=' + this.charset
+    }
     this.response.writeHead(this.status, this.headers);
 };
 
