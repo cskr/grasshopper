@@ -183,9 +183,7 @@ RequestContext.prototype.render = function(view, useLayout) {
         this.response.writeHead(this.status, this.headers);
         if(this.request.method != 'HEAD') {
             var self = this;
-            view(function() {
-                self.response.end();
-            });
+            view();
         }
     } else {
         this.model['flash'] = this.flash;
