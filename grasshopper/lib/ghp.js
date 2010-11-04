@@ -30,7 +30,8 @@ function fill(templateFile, response, model, encoding, viewsDir, extn, locale, s
     var template = cache[templateFile];
     if(!template) {
         var content = fs.readFileSync(templateFile, encoding);
-        cache[templateFile] = template = compile(content, helpers.length + 2);
+        cache[templateFile] = template = compile(content, helpers.length + 2,
+                                                    templateFile);
     }
     template(streamer, model, [new IncludeHelper(streamer, model, encoding, viewsDir, extn, locale), {locale: locale}].concat(helpers));
     if(endResponse) {
@@ -52,7 +53,7 @@ exports.configure = function(config) {
     }
 };
 
-function compile(text, helpersCount) {
+function compile(text, helpersCount, fileName) {
     var funcBody = "model = model || {};";
 
     for(var i = 0; i < helpersCount; i++) {
@@ -64,25 +65,25 @@ function compile(text, helpersCount) {
     var parts = text.split("<%");
     parts.forEach(function(part) {
         if(part.indexOf("%>") == -1) {
-            funcBody += "out.write('" + escapeCode(part) + "');";
+            funcBody += getWriteCode(escapeCode(part));
         } else if(part.charAt(0) == '=') {
             var subParts = part.split('%>');
             funcBody += "out.write(escapeHTML(" + subParts[0].substring(1)
                         + "));";
             if(subParts.length > 1) {
-                funcBody += "out.write('" + escapeCode(subParts[1]) + "');";
+                funcBody += getWriteCode(escapeCode(subParts[1]));
             }
         } else if(part.charAt(0) == 'h') {
             var subParts = part.split('%>');
             funcBody += "out.write(" + subParts[0].substring(1) + ");";
             if(subParts.length > 1) {
-                funcBody += "out.write('" + escapeCode(subParts[1]) + "');";
+                funcBody += getWriteCode(escapeCode(subParts[1]));
             }
         } else {
             var subParts = part.split('%>');
             funcBody += subParts[0];
             if(subParts.length > 1) {
-                funcBody += "out.write('" + escapeCode(subParts[1]) + "');";
+                funcBody += getWriteCode(escapeCode(subParts[1]));
             }
         }
     });
@@ -93,11 +94,30 @@ function compile(text, helpersCount) {
         funcBody += "}";
     }
 
-    return new Function("out", "model", "helpers", funcBody);
+    return process.compile('tmpl = function(out, model, helpers) {'
+                                + funcBody
+                            + '}', fileName);
 }
 
 function escapeCode(str) {
     return str.split("'").join("\\'").split('\r').join('\\r').split('\n').join('\\n');
+}
+
+function getWriteCode(text) {
+    var code = '';
+    if(text.indexOf('\\n') >= 0) {
+        var lines = text.split('\\n');
+        lines.forEach(function(line, index) {
+            if(line.length > 0) {
+                code += "out.write('" + line + "\\n');\n";
+            } else if(index < lines.length - 1) {
+                code += "\nout.write('\\n');";
+            }
+        });
+    } else {
+        code += "out.write('" + text + "');";
+    }
+    return code;
 }
 
 // Class: IncludeHelper
