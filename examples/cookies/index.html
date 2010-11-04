@@ -8,16 +8,14 @@
             <input name="value" />
             <input type="submit" value="Set Cookie" />
         </form>
-        <% if(cookies) { %>
-            <h1>Current Cookies</h1>
+        <h1>Current Cookies</h1>
 
-            <table>
-                <% for(cookie in cookies) { %>
-                    <tr>
-                        <td style="font-weight: bold"><%= cookie %>: </td><td><%= cookies[cookie] %></td>
-                    </tr>
-                <% } %>
-            </table>
-        <% } %>
+        <table>
+            <% for(cookie in cookies) { %>
+                <tr>
+                    <td style="font-weight: bold"><%= cookie %>: </td><td><%= cookies[cookie] %></td>
+                </tr>
+            <% } %>
+        </table>
     </body>
 </html>

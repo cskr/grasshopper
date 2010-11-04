@@ -78,8 +78,8 @@ function RequestContext(request, response, params) {
     };
 
     var cookieLine = request.headers['cookie'];
+    this.requestCookies = {};
     if(cookieLine) {
-        this.requestCookies = {};
         var cookies = cookieLine.split('; ');
         for(var i = 0; i < cookies.length; i++) {
             var cookieParts = cookies[i].split('=');
