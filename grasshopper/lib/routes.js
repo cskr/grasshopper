@@ -116,7 +116,7 @@ function startServer(routes, port, credentials, hostname, callback) {
         try {
             dispatcher.dispatch(req, res, routeMatcher);
         } catch(e) {
-            renderer.handleError(e, req, res);
+            renderer._handleError(e, req, res);
         }
     });
     servers.push(server);

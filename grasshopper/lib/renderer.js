@@ -34,12 +34,12 @@ var viewsDir = '.',
     flashEnabled = true,
     layout = undefined;
 
-exports.handleError = function(err, req, res, params) {
+exports._handleError = function(err, req, res, params) {
     if(params === undefined) {
         params={};
     }
 
-    new RequestContext(req, res, params).handleError(err);
+    new RequestContext(req, res, params)._handleError(err);
 };
 
 exports.configure = function(config) {
@@ -67,7 +67,7 @@ function RequestContext(request, response, params) {
     this.model = {};
 
     this.status = 200;
-    this.extn = this.getExtn();
+    this.extn = this._getExtn();
     this.encoding = defaultEncoding;
     this.headers = {
         'content-type': mime.mimes[this.extn] 
@@ -95,7 +95,7 @@ function RequestContext(request, response, params) {
     this.charset = defaultCharset;
 }
 
-RequestContext.prototype.getExtn = function() {
+RequestContext.prototype._getExtn = function() {
     var extn = defaultViewExtn;
     var path = url.parse(this.request.url).pathname;
     if(path.match(/\.[^\/]+$/)) {
@@ -156,7 +156,7 @@ RequestContext.prototype.addCookie = function(cookie) {
     }
 };
 
-RequestContext.prototype.rotateFlash = function(cb) {
+RequestContext.prototype._rotateFlash = function(cb) {
     var self = this;
     this.flash = {};
     if(flashEnabled) {
@@ -182,7 +182,6 @@ RequestContext.prototype.render = function(view, useLayout) {
     } else if(typeof view == 'function') {
         this.response.writeHead(this.status, this.headers);
         if(this.request.method != 'HEAD') {
-            var self = this;
             view();
         }
     } else {
@@ -197,34 +196,30 @@ RequestContext.prototype.render = function(view, useLayout) {
         }
 
         try {
-            this.writeHead();
+            this._writeHead();
             ghp.fill(viewFile, this.response, this.model, this.encoding, viewsDir, this.extn, this.locale);
         } catch(e) {
-            this.handleError(e);
+            this._handleError(e);
         }
     }
 };
 
 RequestContext.prototype.renderText = function(text) {
-    this.send(text);
-};
-
-RequestContext.prototype.send = function(text) {
-    this.writeHead();
+    this._writeHead();
     if(this.request.method != 'HEAD') {
         this.response.write(text, this.encoding);
     }
     this.response.end();
 };
 
-RequestContext.prototype.writeHead = function() {
+RequestContext.prototype._writeHead = function() {
     if(this.charset) {
         this.headers['content-type'] += '; charset=' + this.charset
     }
     this.response.writeHead(this.status, this.headers);
 };
 
-RequestContext.prototype.renderStatic = function() {
+RequestContext.prototype._renderStatic = function() {
     if(this.request.method != 'GET' && this.request.method != 'HEAD') {
         this.extn = defaultViewExtn;
         this.headers['content-type'] = mime.mimes[defaultViewExtn];
@@ -248,7 +243,7 @@ RequestContext.prototype.renderStatic = function() {
                 self.headers['content-type'] = mime.mimes[defaultViewExtn];
                 self.renderError(404);
             } else {
-                self.handleError(err);
+                self._handleError(err);
             }
         } else {
             sendStatic(staticFile, stats, self);
@@ -260,7 +255,7 @@ RequestContext.prototype.sendFile = function(file, fileName) {
     var self = this;
     fs.stat(file, function(err, stats) {
         if(err) {
-            self.handleError(err);
+            self._handleError(err);
         } else {
             if(!fileName) {
                 fileName = file.substring(file.lastIndexOf('/') + 1);
@@ -288,10 +283,10 @@ RequestContext.prototype.renderError = function(status, error) {
     fs.stat(viewFile, function(err, stats) {
         if(!err && stats.isFile()) {
             try {
-                self.writeHead();
+                self._writeHead();
                 ghp.fill(viewFile, self.response, {error: error}, self.encoding, viewsDir, self.extn, this.locale);
             } catch(e) {
-                self.handleError(e);
+                self._handleError(e);
             }
         } else {
             self.response.writeHead(self.status, self.headers);
@@ -300,7 +295,7 @@ RequestContext.prototype.renderError = function(status, error) {
     });
 };
 
-RequestContext.prototype.handleError = function(err) {
+RequestContext.prototype._handleError = function(err) {
     if(err) {
         console.log(err.stack);
     }
@@ -322,7 +317,7 @@ RequestContext.prototype.redirect = function(location) {
     }
 };
 
-RequestContext.prototype.beginSession = function(callback) {
+RequestContext.prototype._beginSession = function(callback) {
     var sessionId = crypto.createHash('sha1').update(uuid.generateUUID()).digest('hex');
     var self = this;
     session.getSessionStore().beginSession(sessionId, function(err) {
@@ -349,7 +344,7 @@ RequestContext.prototype.setSessionValue = function(key, value, callback) {
             callback(err);
         } else {
             if(!has) {
-                self.beginSession(setter);
+                self._beginSession(setter);
             } else {
                 setter();
             }

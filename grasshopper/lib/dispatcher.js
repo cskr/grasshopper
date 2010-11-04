@@ -61,7 +61,7 @@ exports.dispatch = function(req, res, routeMatcher) {
                         params = querystring.parse(dataString);
                         action.invokeController(new renderer.RequestContext(req, res, params), path);
                     } catch(e) {
-                        renderer.handleError(e, req, res, params);
+                        renderer._handleError(e, req, res, params);
                     }
                 });
             } else if(req.headers['content-type'] && req.headers['content-type'].match(/^multipart\/form-data/)) {
@@ -78,7 +78,7 @@ exports.dispatch = function(req, res, routeMatcher) {
     } else {
         var context = new renderer.RequestContext(req, res, params);
         applyFilters(context, path, function() { 
-            context.renderStatic();
+            context._renderStatic();
         });
     }
 }
@@ -142,7 +142,7 @@ Action.prototype.invokeController = function(context, path) {
     }
 
     var self = this; 
-    context.rotateFlash(function() {
+    context._rotateFlash(function() {
         applyFilters(context, path, function() { 
             self.controller.apply(context, [argValues]);
         });

@@ -49,7 +49,7 @@ exports.parse = function(context, callback) {
     });
 
     form.on('error', function(err) {
-        context.handleError(err);
+        context._handleError(err);
     });
 
     form.on('end', function() {
