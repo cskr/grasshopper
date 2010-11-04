@@ -109,7 +109,11 @@ function getWriteCode(text) {
         var lines = text.split('\\n');
         lines.forEach(function(line, index) {
             if(line.length > 0) {
-                code += "out.write('" + line + "\\n');\n";
+                if(index < lines.length - 1) {
+                    code += "out.write('" + line + "\\n');\n";
+                } else {
+                    code += "out.write('" + line + "');";
+                }
             } else if(index < lines.length - 1) {
                 code += "\nout.write('\\n');";
             }
