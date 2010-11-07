@@ -33,6 +33,7 @@ exports.api.initModel = function(modelCtor, props) {
     modelCtor.prototype.isValid = isValid;
     modelCtor.prototype.addError = addError;
     modelCtor.prototype.validateRequired = validateRequired;
+    modelCtor.prototype.validateLength = validateLength;
     modelCtor.prototype.validateNumeric = validateNumeric;
     modelCtor.prototype.validateDate = validateDate;
     modelCtor.prototype.validatePattern = validatePattern;
@@ -120,6 +121,20 @@ function validateRequired(propName, error, prefix) {
         this.addError(propName, error, prefix);
     }
     if(Array.isArray(this[propName]()) && this[propName]().length == 0) {
+        this.addError(propName, error, prefix);
+    }
+}
+
+function validateLength(propName, min, max, error, prefix) {
+    if(typeof error == 'boolean') {
+        prefix = error;
+        error = 'length';
+    } else {
+        error = error || 'length';
+    }
+
+    if(this[propName]() !== undefined && this[propName]() !== null
+        && (this[propName]().length < min || this[propName]().length > max)) {
         this.addError(propName, error, prefix);
     }
 }

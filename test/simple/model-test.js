@@ -7,11 +7,12 @@ exports.suite = suite;
 function Person() {
 }
 
-gh.initModel(Person, 'name', 'age', 'dob', 'someProp', 'friends');
+gh.initModel(Person, 'name', 'age', 'sex', 'dob', 'someProp', 'friends');
 
 Person.prototype.validate = function(next) {
     this.validateRequired('name', 'Name is required.', false);
     this.validateNumeric('age', false);
+    this.validateLength('sex', 1, 1);
     this.validateDate('dob');
     this.validatePattern('someProp', /^\d.*/);
 }
@@ -83,10 +84,11 @@ suite.tests = {
 
     'Trigger validations.': function(next) {
         var p = new Person();
-        p.update({age: 'ABC', dob: 'XYZ'});
+        p.update({sex: 'Male', age: 'ABC', dob: 'XYZ'});
         assert.ok(!p.isValid());
         assert.equal(p.errors['name'][0], 'Name is required.');
         assert.equal(p.errors['age'][0], 'numeric');
+        assert.equal(p.errors['sex'][0], 'Person.sex.length');
         assert.equal(p.errors['dob'][0], 'Person.dob.date');
         assert.equal(p.errors['someProp'][0], 'Person.someProp.pattern');
         next();
