@@ -24,22 +24,28 @@ try {
 
 function GzipResponseWrapper(response, compressionLevel) {
     ResponseWrapper.call(this, response);
-    this.compressor = new compress.GzipStream();
-    var self = this;
-    this.compressor.on('data', function(data) {
-        if(self.hasBody) {
-            self.response.write(data);
-        }
-    });
-    this.compressor.on('error', function(err) {
-        self.response.emit('error', err);
-    });
-    this.compressor.on('end', function() {
-        self.response.end();
-    });
 }
 
 util.inherits(GzipResponseWrapper, ResponseWrapper);
+
+GzipResponseWrapper.prototype._createCompressor = function() {
+    this.compressor = new compress.GzipStream();
+    var self = this;
+
+    this.compressor.on('data', function(data) {
+        if(self._hasBody) {
+            self.response.write(data);
+        }
+    });
+
+    this.compressor.on('error', function(err) {
+        self.response.emit('error', err);
+    });
+
+    this.compressor.on('end', function() {
+        self.response.end();
+    });
+};
 
 GzipResponseWrapper.prototype.writeHead = function(statusCode, reasonPhrase,
                                                 headers) {
@@ -58,7 +64,7 @@ GzipResponseWrapper.prototype.writeHead = function(statusCode, reasonPhrase,
     }
 
     if(!headers['content-encoding']) {
-        this.compressionEnabled = true;
+        this._createCompressor();
         delete headers['content-length'];
         headers['transfer-encoding'] = 'chunked';
         headers['content-encoding'] = 'gzip';
@@ -69,25 +75,28 @@ GzipResponseWrapper.prototype.writeHead = function(statusCode, reasonPhrase,
 }
 
 GzipResponseWrapper.prototype.write = function(chunk, encoding) {
-    if(this.compressionEnabled) {
-        this.hasBody = true;
-        this.compressor.write(chunk, encoding);
+    if(this.compressor) {
+        this._hasBody = true;
+        return this.compressor.write(chunk, encoding);
     } else {
-        this.response.write(chunk, encoding);
+         return this.response.write(chunk, encoding);
     }
 }
 
 GzipResponseWrapper.prototype.end = function(data, encoding) {
     this.writable = false;
-    if(data) {
-        if(this.compressionEnabled) {
-            this.hasBody = true;
+
+    if(this.compressor) {
+        if(data) {
+            this._hasBody = true;
             this.compressor.write(data, encoding);
+            this.compressor.close();
         } else {
-            this.response.end(data, encoding);
+            this.compressor.close();
         }
+    } else {
+        this.response.end(data, encoding);
     }
-    this.compressor.close();
 }
 
 exports.GzipResponseWrapper = GzipResponseWrapper;
