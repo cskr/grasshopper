@@ -29,22 +29,7 @@ function GzipResponseWrapper(response, compressionLevel) {
 util.inherits(GzipResponseWrapper, ResponseWrapper);
 
 GzipResponseWrapper.prototype._createCompressor = function() {
-    this.compressor = new compress.GzipStream();
-    var self = this;
-
-    this.compressor.on('data', function(data) {
-        if(self._hasBody) {
-            self.response.write(data);
-        }
-    });
-
-    this.compressor.on('error', function(err) {
-        self.response.emit('error', err);
-    });
-
-    this.compressor.on('end', function() {
-        self.response.end();
-    });
+    this._compressor = new compress.GzipStream();
 };
 
 GzipResponseWrapper.prototype.writeHead = function(statusCode, reasonPhrase,
@@ -75,9 +60,24 @@ GzipResponseWrapper.prototype.writeHead = function(statusCode, reasonPhrase,
 }
 
 GzipResponseWrapper.prototype.write = function(chunk, encoding) {
-    if(this.compressor) {
-        this._hasBody = true;
-        return this.compressor.write(chunk, encoding);
+    if(this._compressor) {
+        if(!this._pumpStarted) {
+            this._pumpStarted = true;
+            util.pump(this._compressor, this.response);
+        }
+
+        var self = this;
+
+        // This is required to workaround a bug either in node-compress/node
+        // which occurs when streaming large files.
+        // I couldn't isolate the exact problem.  This hack works and
+        // doesn't affect performance.
+        process.nextTick(function() {
+            self.emit('drain');
+        });
+
+        this._compressor.write(chunk, encoding);
+        return false;
     } else {
          return this.response.write(chunk, encoding);
     }
@@ -86,14 +86,15 @@ GzipResponseWrapper.prototype.write = function(chunk, encoding) {
 GzipResponseWrapper.prototype.end = function(data, encoding) {
     this.writable = false;
 
-    if(this.compressor) {
+    if(this._compressor) {
         if(data) {
-            this._hasBody = true;
-            this.compressor.write(data, encoding);
-            this.compressor.close();
-        } else {
-            this.compressor.close();
+            if(!this._pumpStarted) {
+                util.pump(this._compressor, this.response);
+            }
+
+            this._compressor.write(data, encoding);
         }
+        this._compressor.close();
     } else {
         this.response.end(data, encoding);
     }
