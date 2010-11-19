@@ -63,11 +63,11 @@ exports.api.secureDel = function(path, controller) {
 }
 
 exports.api.serve = function(port, hostname, callback) {
-    startServer(routes, port, undefined, hostname, callback);
+    return startServer(routes, port, undefined, hostname, callback);
 };
 
 exports.api.serveSecure = function(port, credentials, hostname, callback) {
-    startServer(secureRoutes, port, credentials, hostname, callback);
+    return startServer(secureRoutes, port, credentials, hostname, callback);
 };
 
 exports.api.stop = function() {
@@ -83,10 +83,6 @@ exports.api.getController = function(method, path) {
 
 exports.api.getSecureController = function(method, path) {
     return secureRoutes[method + ':' + path];
-};
-
-exports.api.servers = function() {
-    return servers;
 };
 
 function redirectSecure() {
@@ -121,8 +117,12 @@ function startServer(routes, port, credentials, hostname, callback) {
     });
     servers.push(server);
 
-    server.listen(port, hostname, function() {
-        console.log('Hopping at port: ' + port + '. Use Ctrl+C to stop.');
-        if(callback) callback();
-    });
+    if(typeof port == 'number') {
+        server.listen(port, hostname, function() {
+            console.log('Hopping at port: ' + port + '. Use Ctrl+C to stop.');
+            if(callback) callback();
+        });
+    }
+
+    return server;
 }
