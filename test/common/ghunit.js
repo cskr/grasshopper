@@ -2,10 +2,27 @@ exports.test = function() {
     var suites = arguments;
     var failures = [], passes = 0;
 
+    for(var i = 0; i < suites.length; i++) {
+        suite = suites[i];
+
+        if(suite.setup === undefined) {
+            suite.setup = function(next) { next(); }
+        }
+        if(suite.tearDown === undefined) {
+            suite.tearDown = function(next) { next(); }
+        }
+        if(suite.setupOnce === undefined) {
+            suite.setupOnce = function(next) { next(); }
+        }
+        if(suite.tearDownOnce === undefined) {
+            suite.tearDownOnce = function(next) { next(); }
+        }
+    }
+
     var suite = suites[0], suiteIndex = 0, tests = Object.keys(suite.tests),
         testIndex = -1;
 
-    nextTest();
+    suite.setupOnce(nextTest);
 
     function nextTest() {
         if(testIndex < Object.keys(suite.tests).length - 1) {
@@ -16,7 +33,7 @@ exports.test = function() {
             testIndex = 0;
             suite = suites[suiteIndex];
             tests = Object.keys(suite.tests);
-            runTest();
+            suite.setupOnce(runTest);
         } else {
             printResult();
         }
@@ -24,10 +41,23 @@ exports.test = function() {
 
     function runTest() {
         console.log(tests[testIndex] + ' [' + suite.name + ']');
-        suite.tests[tests[testIndex]](function() {
-            passes++;
-            nextTest();
-        });
+
+        suite.setup(function() {
+		    suite.tests[tests[testIndex]](function() {
+		        passes++;
+                runTearDown();
+		    });
+		});
+    }
+
+    function runTearDown() {
+        if(testIndex < Object.keys(suite.tests).length - 1) {
+            suite.tearDown(nextTest);
+        } else {
+            suite.tearDown(function() {
+                suite.tearDownOnce(nextTest);
+            });
+        }
     }
 
     process.on('uncaughtException', function(err) {
