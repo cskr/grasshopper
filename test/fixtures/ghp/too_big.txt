@@ -1,0 +1,6 @@
+offset<% 
+var tooBig = '';
+for (var i = 0; i <= 8200; i++) { 
+	tooBig += 'A';
+} 
+%><%=tooBig%>

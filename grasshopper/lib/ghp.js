@@ -158,10 +158,11 @@ Streamer.prototype.write = function(str) {
 
         while(this._bufContentLen +
                 (tmpBuffer.length - currentOffset) >= bufferSize) {
+            var remaining = bufferSize - this._bufContentLen;
             tmpBuffer.copy(this._out, this._bufContentLen, currentOffset,
-                            currentOffset + bufferSize);
-            currentOffset += bufferSize;
-            this._bufContentLen += bufferSize;
+                            currentOffset + remaining);
+            currentOffset += remaining;
+            this._bufContentLen += remaining;
             this.flush();
         }
 

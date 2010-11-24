@@ -71,6 +71,14 @@ suite.tests = {
         assert.equal(response.out, '\n');
         assert.ok(response.ended);
         next();
+    },
+    
+    'Too big template' : function(next) {
+        var response = new MockResponse();
+        ghp.fill('../fixtures/ghp/too_big.txt', response, {}, 'utf8', '../fixtures/ghp', 'txt');
+        assert.equal(response.out.length, 8207);
+        assert.ok(response.ended);
+        next();
     }
 };
 
