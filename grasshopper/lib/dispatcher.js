@@ -17,6 +17,7 @@
 var url = require('url'),
     querystring = require('querystring'),
     renderer = require('./renderer'),
+    ParamParser = require('./params').ParamParser,
     multipart = require('./multipart');
 
 exports.api = {};
@@ -59,24 +60,24 @@ exports.dispatch = function(req, res, routeMatcher) {
                 req.on('end', function() {
                     try {
                         params = querystring.parse(dataString);
-                        action.invokeController(new renderer.RequestContext(req, res, params), path);
+                        action.invokeController(new renderer.RequestContext(req, res, splitParams(params)), path);
                     } catch(e) {
                         renderer._handleError(e, req, res, params);
                     }
                 });
             } else if(req.headers['content-type'] && req.headers['content-type'].match(/^multipart\/form-data/)) {
-                var context = new renderer.RequestContext(req, res, params);
+                var context = new renderer.RequestContext(req, res, splitParams(params));
                 multipart.parse(context, function() {
                     action.invokeController(context, path);
                 });
             } else {
-                action.invokeController(new renderer.RequestContext(req, res, params), path);
+                action.invokeController(new renderer.RequestContext(req, res, splitParams(params)), path);
             }
         } else {
-            action.invokeController(new renderer.RequestContext(req, res, params), path);
+            action.invokeController(new renderer.RequestContext(req, res, splitParams(params)), path);
         }
     } else {
-        var context = new renderer.RequestContext(req, res, params);
+        var context = new renderer.RequestContext(req, res, splitParams(params));
         applyFilters(context, path, function() { 
             context._renderStatic();
         });
@@ -91,6 +92,15 @@ function stripPath(path) {
     } else {
         return path;
     }
+}
+
+function splitParams(params) {
+    var parser = new ParamParser();
+
+    Object.keys(params).forEach(function(key) {
+        parser.addParam(key, params[key]);
+    });
+    return parser.getParams();
 }
 
 // Class: RouteMatcher
