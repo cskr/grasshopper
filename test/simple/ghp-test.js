@@ -73,10 +73,18 @@ suite.tests = {
         next();
     },
     
-    'Too big template' : function(next) {
+    'Too big template': function(next) {
         var response = new MockResponse();
         ghp.fill('../fixtures/ghp/too_big.txt', response, {}, 'utf8', '../fixtures/ghp', 'txt');
         assert.equal(response.out.length, 8207);
+        assert.ok(response.ended);
+        next();
+    },
+
+    'Template with certain new-lines ignored': function(next) {
+        var response = new MockResponse();
+        ghp.fill('../fixtures/ghp/newline_skipped.txt', response, {}, 'utf8', '../fixtures/ghp', 'txt');
+        assert.equal(response.out, '0\n1\n2\n');
         assert.ok(response.ended);
         next();
     }

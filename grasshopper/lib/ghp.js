@@ -54,6 +54,7 @@ exports.configure = function(config) {
 };
 
 function compile(text, helpersCount, fileName) {
+    text = skipIgnoredNewlines(text);
     var funcBody = "model = model || {};";
 
     for(var i = 0; i < helpersCount; i++) {
@@ -97,6 +98,11 @@ function compile(text, helpersCount, fileName) {
     return process.compile('tmpl = function(out, model, helpers) {'
                                 + funcBody
                             + '}', fileName);
+}
+
+function skipIgnoredNewlines(text) {
+    return text.split('-%>\r\n').join('%>').split('-%>\n').join('%>')
+                .split('-%>').join('%>');
 }
 
 function escapeCode(str) {
