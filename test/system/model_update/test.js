@@ -26,6 +26,34 @@ suite.tests = {
                 next();
             });
         });
+    },
+
+    'Array values with a *.': function(next) {
+        testUtil.invoke('POST', '/countries', {}, 'country.name=India'
+                            + '&country.*cities=Bangalore'
+                            + '&country.*cities=Chennai',
+        function(res) {
+            res.on('data', function(chunk) {
+                assert.equal(chunk, 'India Bangalore Chennai\n');
+                next();
+            });
+        });
+    },
+
+    'Array values with [].': function(next) {
+        if(process.version.split('.')[1] < 3) {
+            next();
+            return;
+        }
+        testUtil.invoke('POST', '/countries', {}, 'country.name=India'
+                            + '&country.cities[]=Bangalore'
+                            + '&country.cities[]=Chennai',
+        function(res) {
+            res.on('data', function(chunk) {
+                assert.equal(chunk, 'India Bangalore Chennai\n');
+                next();
+            });
+        });
     }
 }
 

@@ -49,10 +49,14 @@ function update(props, converter, complete) {
     }
     keys.forEach(function(prop) {
         var propVal = props[prop];
-        if(Array.isArray(propVal) || prop.substring(0, 1) == '*') {
+        if(Array.isArray(propVal) || prop.substring(0, 1) == '*'
+                                  || prop.substring(prop.length - 2) == '[]') {
             if(prop.substring(0, 1) == '*') {
                 var makeArray = true;
                 prop = prop.substring(1);
+            } else if(prop.substring(prop.length - 2) == '[]') {
+                var makeArray = true;
+                prop = prop.substring(0, prop.length - 2);
             } else {
                 var breakArray = true;
             }
