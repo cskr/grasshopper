@@ -149,7 +149,7 @@ exports.collectionSelect = function(attribs) {
 };
 
 exports.escapeHTML = function(html) {
-    if(html) {
+    if(html !== undefined && html !== null) {
         return String(html).
             replace(/&/gmi, '&amp;').
             replace(/"/gmi, '&quot;').
