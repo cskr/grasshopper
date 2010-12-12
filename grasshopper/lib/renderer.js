@@ -74,7 +74,7 @@ function RequestContext(request, response, params) {
                         ? mime.mimes[this.extn] 
                         : 'application/octet-stream',
         'date': new Date().toUTCString(),
-        'x-powered-by': 'Grasshopper/0.3.2'
+        'x-powered-by': 'Grasshopper/0.3.3'
     };
 
     var cookieLine = request.headers['cookie'];

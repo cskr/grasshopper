@@ -1,12 +1,12 @@
 {
     "name" : "grasshopper",
-    "version" : "0.3.2",
+    "version" : "0.3.3",
     "contributors": [ 
         { "name": "Chandra Sekar S", "email": "chandru.in@gmail.com" }
     ],
     "dependencies": {
         "formidable": ">=0.9.9"
     },
-    "engines" : { "node": ">= 0.2.4" },
+    "engines" : { "node": ">= 0.2.5" },
     "main" : "."
 }
