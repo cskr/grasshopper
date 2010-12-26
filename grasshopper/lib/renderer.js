@@ -322,7 +322,7 @@ RequestContext.prototype._beginSession = function(callback) {
     var self = this;
     session.getSessionStore().beginSession(sessionId, function(err) {
         if(!err) {
-            this.sessionId = sessionId;
+            self.sessionId = sessionId;
             self.addCookie(new gh.Cookie('GHSESSION', sessionId));
         }
         callback(err);
@@ -330,15 +330,16 @@ RequestContext.prototype._beginSession = function(callback) {
 };
 
 RequestContext.prototype.setSessionValue = function(key, value, callback) {
+    var self = this;
     var store = session.getSessionStore();
     var setter = function (err) {
         if(err) {
             callback(err);
         } else {
-            store.setValue(this.sessionId, key, value, callback);
+            store.setValue(self.sessionId, key, value, callback);
         }
     };
-    var self = this;
+
     store.hasSession(this.sessionId, function(err, has) {
         if(err) {
             callback(err);
@@ -369,10 +370,11 @@ RequestContext.prototype.unsetSessionValue = function(key, callback) {
 };
 
 RequestContext.prototype.getSessionValue = function(key, callback) {
+    var self = this;
     var store = session.getSessionStore();
     store.hasSession(this.sessionId, function(err, has) {
         if(!err && has) {
-            store.getValue(this.sessionId, key, callback);
+            store.getValue(self.sessionId, key, callback);
         } else {
             callback(err);
         }
@@ -380,10 +382,11 @@ RequestContext.prototype.getSessionValue = function(key, callback) {
 };
 
 RequestContext.prototype.endSession = function(callback) {
+    var self = this;
     var store = session.getSessionStore();
     store.hasSession(this.sessionId, function(err, has) {
         if(!err && has) {
-            store.endSession(this.sessionId, callback);
+            store.endSession(self.sessionId, callback);
         } else {
             callback(err)
         }
