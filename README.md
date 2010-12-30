@@ -1,7 +1,7 @@
 Grasshopper
 ==========
 
-A simple MVC framework for web applications built on [node.JS](http://nodejs.org/).  Follow the [instructions to install node.JS](http://nodejs.org/#download).  Join the [mailing list](http://groups.google.com/group/grasshopperjs) for further help and feedback.
+A feature-rich and flexible MVC framework for web applications and services built on [node.JS](http://nodejs.org/).  Follow the [instructions to install node.JS](http://nodejs.org/#download).  Join the [mailing list](http://groups.google.com/group/grasshopperjs) for further help and feedback.
 
 This framework is licensed under the terms of [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 
