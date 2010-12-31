@@ -13,8 +13,8 @@ gh.get('/', function() {
     this.renderText(this.params['name']);
 });
 
-gh.get('/args_supported/{name}', function(args) {
-    this.renderText(args['name']);
+gh.get('/args_supported/{id}/{name}', function(args) {
+    this.renderText(args['id'] + ' ' + args['name']);
 });
 
 gh.get('/templated/{name}', function(args) {

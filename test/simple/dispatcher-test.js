@@ -13,9 +13,11 @@ suite.tests = {
         next();
     },
 
-    'GET with in-path argument.': function(next) {
-        invoke('GET', '/path/ABC', {}, undefined, '/path/{id}', function(args) {
-            assert.equal(args.id, 'ABC');
+    'GET with in-path arguments.': function(next) {
+        invoke('GET', '/path/1/ABC', {}, undefined, '/path/{id}/{name}',
+            function(args) {
+                assert.equal(args.id, '1');
+                assert.equal(args.name, 'ABC');
         });
         next();
     },

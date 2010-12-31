@@ -26,9 +26,9 @@ suite.tests = {
     },
 
     'GET with URL argument.': function(next) {
-        testUtil.invoke('GET', '/args_supported/Chandru', {}, function(res) {
+        testUtil.invoke('GET', '/args_supported/1/Chandru', {}, function(res) {
             res.on('data', function(chunk) {
-                assert.equal(chunk, 'Chandru');
+                assert.equal(chunk, '1 Chandru');
                 next();
             });
         });
