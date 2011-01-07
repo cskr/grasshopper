@@ -1,5 +1,4 @@
 var suites = [
-    require('./auth-test').suite,
     require('./dispatcher-test').suite,
     require('./ghp-test').suite,
     require('./gzip-test').suite,
@@ -8,7 +7,8 @@ var suites = [
     require('./model-test').suite,
     require('./routes-test').suite,
     require('./wrapper-test').suite,
-    require('./params-test').suite
+    require('./params-test').suite,
+    require('./context-test').suite
 ];
 
 require('../common/ghunit').test.apply(null, suites);

@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-var EventEmitter = require('events').EventEmitter;
+var EventEmitter = require('events').EventEmitter,
+    fs = require('fs');
 
 function MockRequest(method, url, headers) {
    EventEmitter.call(this);
@@ -36,8 +37,12 @@ require('util').inherits(MockResponse, EventEmitter);
 
 MockResponse.prototype.writeHead = function(statusCode, reasonPhrase, headers) {
     this.statusCode = statusCode;
-    this.reasonPhrase = reasonPhrase;
-    this.headers = headers;
+    if(typeof reasonPhrase == 'object') {
+        this.headers = reasonPhrase;
+    } else {
+        this.reasonPhrase = reasonPhrase;
+        this.headers = headers;
+    }
 };
 
 MockResponse.prototype.write = function(chunk, encoding) {
@@ -55,6 +60,29 @@ MockResponse.prototype.end = function(data, encoding) {
 
 MockResponse.prototype.destroy = function() {
     this.writable = false;
+};
+
+// Mock modules (supports only non-native modules currently)
+
+var moduleOriginals = {};
+
+exports.mockModule = function(mod, exports) {
+    var moduleId = fs.realpathSync(mod + '.js');
+    var cacheValue = require(moduleId.substring(0, moduleId.length - 3));
+    moduleOriginals[moduleId] = {};
+    Object.keys(exports).forEach(function(key) {
+        moduleOriginals[moduleId][key] = cacheValue[key];
+        cacheValue[key] = exports[key];
+    });
+};
+
+exports.unmockModule = function(mod) {
+    var moduleId = fs.realpathSync(mod + '.js');
+    var cacheValue = require(moduleId.substring(0, moduleId.length - 3));
+    Object.keys(moduleOriginals[moduleId]).forEach(function(key) {
+        cacheValue[key] = moduleOriginals[moduleId][key];
+    });
+    delete moduleOriginals[moduleId];
 };
 
 exports.MockRequest = MockRequest;
