@@ -8,6 +8,7 @@ var suites = [
     require('./routes-test').suite,
     require('./wrapper-test').suite,
     require('./params-test').suite,
+    require('./cookie-test').suite,
     require('./context-test').suite
 ];
 
