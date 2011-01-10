@@ -5,6 +5,7 @@ var assert = require('assert'),
 
 var context = require('../../grasshopper/lib/context'),
     base64 = require('../../grasshopper/lib/base64'),
+    Cookie = require('../../grasshopper/lib/cookie').api.Cookie,
     RequestContext = context.RequestContext;
 
 var suite = {name: 'Request Context Tests'};
@@ -130,6 +131,23 @@ suite.tests = {
             assert.equal(res.statusCode, 500);
             next();
         });
+    },
+
+    'Add Cookie.': function(next) {
+        var req = new MockRequest('GET', '/test.txt', {
+            cookie: 'name=Chandru; city=Bangalore'
+        });
+        var res = new MockResponse();
+
+        var ctx = new RequestContext(req, res);
+        ctx.addCookie(new Cookie('language', 'JS'));
+        assert.equal(ctx.headers['set-cookie'],
+                        'language=JS; path=/; HttpOnly');
+        ctx.addCookie(new Cookie('vm', 'v8'));
+        assert.equal(ctx.headers['set-cookie'],
+                        'language=JS; path=/; HttpOnly'
+                            + '\r\nset-cookie: vm=v8; path=/; HttpOnly');
+        next();
     }
 };
 

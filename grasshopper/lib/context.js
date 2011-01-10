@@ -106,6 +106,21 @@ RequestContext.prototype.getAuth = function() {
     }
 };
 
+RequestContext.prototype.addCookie = function(cookie) {
+    var cookieLine = cookie.name + '=' + encodeURIComponent(cookie.value);
+    cookieLine += cookie.path ? '; path=' + cookie.path : '';
+    cookieLine += cookie.expires ? '; expires=' + cookie.expires : '';
+    cookieLine += cookie.domain ? '; domain=' + cookie.domain : '';
+    cookieLine += cookie.secure ? '; secure' : '';
+    cookieLine += cookie.httpOnly ? '; HttpOnly' : '';
+
+    if(this.headers['set-cookie']) {
+        this.headers['set-cookie'] += '\r\nset-cookie: ' + cookieLine;
+    } else {
+        this.headers['set-cookie'] = cookieLine;
+    }
+};
+
 RequestContext.prototype.renderText = function(text) {
     this._writeHead();
     if(this.request.method != 'HEAD') {
@@ -131,7 +146,8 @@ RequestContext.prototype.renderError = function(status, error, cb) {
         if(!err && stats.isFile()) {
             try {
                 self._writeHead();
-                ghp.fill(viewFile, self.response, {error: error}, self.encoding, viewsDir, self.extn, this.locale);
+                ghp.fill(viewFile, self.response, {error: error},
+                            self.encoding, viewsDir, self.extn, this.locale);
                 cb && cb();
             } catch(e) {
                 self._handleError(e);
