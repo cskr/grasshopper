@@ -174,6 +174,11 @@ suite.tests = {
         assert.equal(ctx.headers['set-cookie'],
                         'language=JS; path=/; HttpOnly'
                             + '\r\nset-cookie: vm=v8; path=/; HttpOnly');
+
+        var ctx = new RequestContext(req, res, true);
+        ctx.addCookie(new Cookie('language', 'JS'));
+        assert.equal(ctx.headers['set-cookie'],
+                        'language=JS; path=/; secure; HttpOnly');
         next();
     }
 };

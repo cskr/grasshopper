@@ -109,7 +109,7 @@ function startServer(routes, port, credentials, hostname, callback) {
     }
 
     server.on("request", function(req, res) {
-        var ctx = new context.RequestContext(req, res);
+        var ctx = new context.RequestContext(req, res, !!credentials);
         try {
             dispatcher.dispatch(ctx, routeMatcher);
         } catch(e) {

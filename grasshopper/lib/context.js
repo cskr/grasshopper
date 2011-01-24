@@ -51,9 +51,10 @@ exports.configure = function(config) {
 };
 
 // Class: RequestContext
-function RequestContext(request, response) {
+function RequestContext(request, response, secure) {
     this.request = request;
     this.response = response;
+    this.secure = secure;
     this.model = {};
 
     this.status = 200;
@@ -133,6 +134,8 @@ RequestContext.prototype.getAuth = function() {
 };
 
 RequestContext.prototype.addCookie = function(cookie) {
+    if(this.secure) cookie.secure = true;
+
     var cookieLine = cookie.name + '=' + encodeURIComponent(cookie.value);
     cookieLine += cookie.path ? '; path=' + cookie.path : '';
     cookieLine += cookie.expires ? '; expires=' + cookie.expires : '';
