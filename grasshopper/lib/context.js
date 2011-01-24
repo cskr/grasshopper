@@ -15,14 +15,40 @@
  */
 var url = require('url'),
     fs = require('fs'),
+    util = require('util'),
+    crypto = require('crypto'),
     mime = require('./mime'),
+    uuid = require('./uuid'),
+    session = require('./session'),
+    ghp = require('./ghp'),
     i18n = require('./i18n'),
-    base64 = require('./base64');
+    base64 = require('./base64'),
+    Cookie = require('./cookie').api.Cookie;
 
-var defaultViewExtn = 'html',
+var viewsDir = '.',
+    defaultViewExtn = 'html',
+    staticsDir = '.',
     defaultEncoding = 'utf8',
     defaultCharset = 'UTF-8',
-    viewsDir = '.';
+    flashEnabled = true,
+    layout = undefined;
+
+exports.configure = function(config) {
+    if(config.viewsDir)
+        viewsDir = config.viewsDir;
+    if(config.defaultViewExtn)
+        defaultViewExtn = config.defaultViewExtn;
+    if(config.staticsDir)
+        staticsDir = config.staticsDir;
+    if(config.defaultCharset)
+        defaultCharset = config.defaultCharset;
+    if(config.defaultEncoding)
+        defaultEncoding = config.defaultEncoding;
+    if(config.layout)
+        layout = config.layout;
+    if(config.flashEnabled !== undefined)
+        flashEnabled = config.flashEnabled;
+};
 
 // Class: RequestContext
 function RequestContext(request, response) {
@@ -121,6 +147,43 @@ RequestContext.prototype.addCookie = function(cookie) {
     }
 };
 
+RequestContext.prototype.render = function(view, useLayout, cb) {
+    if(typeof useLayout == 'function') {
+        cb = useLayout;
+        useLayout = undefined;
+    }
+    if(view === undefined) {
+        this.response.writeHead(this.status, this.headers);
+        this.response.end();
+        cb && cb();
+    } else if(typeof view == 'function') {
+        this.response.writeHead(this.status, this.headers);
+        if(this.request.method != 'HEAD') {
+            view();
+            cb && cb();
+        }
+    } else {
+        this.model['flash'] = this.flash;
+        if(useLayout === undefined) {
+            useLayout = true;
+        }
+        var viewFile = viewsDir + '/' + view + '.' + this.extn;
+        if(layout && useLayout) {
+            this.model.view = view;
+            viewFile = layout + '.' + this.extn;
+        }
+
+        try {
+            this._writeHead();
+            ghp.fill(viewFile, this.response, this.model, this.encoding, viewsDir, this.extn, this.locale);
+            cb && cb();
+        } catch(e) {
+            this._handleError(e);
+            cb && cb();
+        }
+    }
+};
+
 RequestContext.prototype.renderText = function(text) {
     this._writeHead();
     if(this.request.method != 'HEAD') {
@@ -161,6 +224,21 @@ RequestContext.prototype.renderError = function(status, error, cb) {
     });
 };
 
+RequestContext.prototype.redirect = function(location, cb) {
+    var self = this;
+    function proceed() {
+        self.headers['location'] = location;
+        self.renderError(302, {location: location}, cb);
+    }
+    if(flashEnabled && this.flash && Object.keys(this.flash).length > 0) {
+        this.setSessionValue('flash', this.flash, function(err) {
+            proceed();
+        });
+    } else {
+        proceed();
+    }
+};
+
 RequestContext.prototype._writeHead = function() {
     if(this.charset) {
         this.headers['content-type'] += '; charset=' + this.charset
@@ -174,4 +252,250 @@ RequestContext.prototype.disableCache = function() {
     this.headers['pragma'] = 'no-cache';
 };
 
+RequestContext.prototype.sendFile = function(file, fileName) {
+    var self = this;
+    fs.stat(file, function(err, stats) {
+        if(err) {
+            self._handleError(err);
+        } else {
+            if(!fileName) {
+                fileName = file.substring(file.lastIndexOf('/') + 1);
+            }
+            var extn = fileName.substring(fileName.lastIndexOf('.') + 1);
+            self.headers['content-type'] = mime.mimes[extn] 
+                            ? mime.mimes[extn] 
+                            : 'application/octet-stream';
+
+            self.headers['content-disposition'] = 'attachment; filename="' + fileName + '"';
+            sendStatic(file, stats, self);
+        }
+    });
+};
+
+RequestContext.prototype.setSessionValue = function(key, value, callback) {
+    var self = this;
+    var store = session.getSessionStore();
+    var setter = function (err) {
+        if(err) {
+            callback(err);
+        } else {
+            store.setValue(self.sessionId, key, value, callback);
+        }
+    };
+
+    store.hasSession(this.sessionId, function(err, has) {
+        if(err) {
+            callback(err);
+        } else {
+            if(!has) {
+                self._beginSession(setter);
+            } else {
+                setter();
+            }
+        }
+    });
+};
+
+RequestContext.prototype.unsetSessionValue = function(key, callback) {
+    var store = session.getSessionStore();
+    var self = this;
+    store.hasSession(this.sessionId, function(err, has) {
+        if(err) {
+            callback(err);
+        } else {
+            if(has) {
+                store.unsetValue(self.sessionId, key, callback);
+            } else {
+                callback();
+            }
+        }
+    });
+};
+
+RequestContext.prototype.getSessionValue = function(key, callback) {
+    var self = this;
+    var store = session.getSessionStore();
+    store.hasSession(this.sessionId, function(err, has) {
+        if(!err && has) {
+            store.getValue(self.sessionId, key, callback);
+        } else {
+            callback(err);
+        }
+    });
+};
+
+RequestContext.prototype.endSession = function(callback) {
+    var self = this;
+    var store = session.getSessionStore();
+    store.hasSession(this.sessionId, function(err, has) {
+        if(!err && has) {
+            store.endSession(self.sessionId, callback);
+        } else {
+            callback(err)
+        }
+    });
+};
+
+RequestContext.prototype._renderStatic = function() {
+    if(this.request.method != 'GET' && this.request.method != 'HEAD') {
+        this.extn = defaultViewExtn;
+        this.headers['content-type'] = mime.mimes[defaultViewExtn];
+        this.renderError(404);
+        return;
+    }
+
+    if(this.request.url.indexOf('/../') >= 0) {
+        this.extn = defaultViewExtn;
+        this.headers['content-type'] = mime.mimes[defaultViewExtn];
+        this.renderError(403);
+        return;
+    }
+
+    var staticFile = staticsDir + decodeURIComponent(url.parse(this.request.url).pathname);
+    var self = this;
+    fs.stat(staticFile, function(err, stats) {
+        if(err || !stats.isFile()) {
+            if((err && err.errno == 2) || !stats.isFile()) {
+                self.extn = defaultViewExtn;
+                self.headers['content-type'] = mime.mimes[defaultViewExtn];
+                self.renderError(404);
+            } else {
+                self._handleError(err);
+            }
+        } else {
+            sendStatic(staticFile, stats, self);
+        }
+    });
+};
+
+RequestContext.prototype._handleError = function(err) {
+    if(err) {
+        console.log(err.stack);
+    }
+    this.renderError(500, err);
+};
+
+RequestContext.prototype._beginSession = function(callback) {
+    var sessionId = crypto.createHash('sha1').update(uuid.generateUUID()).digest('hex');
+    var self = this;
+    session.getSessionStore().beginSession(sessionId, function(err) {
+        if(!err) {
+            self.sessionId = sessionId;
+            self.addCookie(new Cookie('GHSESSION', sessionId));
+        }
+        callback(err);
+    });
+};
+
+RequestContext.prototype._rotateFlash = function(cb) {
+    var self = this;
+    this.flash = {};
+    if(flashEnabled) {
+        this.getSessionValue('flash', function(err, flash) {
+            if(flash) {
+                self.flash = flash;
+                self.unsetSessionValue('flash', function() {
+                    cb();
+                });
+            } else {
+                cb();
+            }
+        });
+    } else {
+		cb();
+	}
+};
+
 exports.RequestContext = RequestContext;
+
+function sendStatic(staticFile, stats, ctx) {
+    function sendBytes() {
+		if(satisfiesConditions(stats, ctx)) {
+		    ctx.headers['last-modified'] = stats.mtime.toUTCString();
+		    ctx.headers['etag'] = stats.mtime.getTime();
+		    var range;
+		    if(ctx.request.headers['range'] && (range = parseRange(ctx, stats))) {;
+		        ctx.status = 206;
+		        ctx.headers['content-length'] = range[1] - range[0] + 1;
+		        ctx.headers['content-range'] = 'bytes ' + range[0] + '-' + range[1] + '/' + stats.size;
+		        var stream = fs.createReadStream(staticFile, {start: range[0], end: range[1]});
+		    } else {
+		        ctx.headers['content-length'] = stats.size;
+		        var stream = fs.createReadStream(staticFile);
+		    }
+
+		    ctx.response.writeHead(ctx.status, ctx.headers);
+		    if(ctx.request.method == 'GET') {
+		        util.pump(stream, ctx.response);
+		    } else {
+		        ctx.response.end();
+		    }
+		}
+	}
+
+    var acceptHeader = ctx.request.headers['accept-encoding'];
+    if(acceptHeader && acceptHeader.indexOf('gzip') >= 0) {
+        fs.stat(staticFile + '.gz', function(err, gzipStats) {
+            if(!err) {
+                ctx.headers['content-encoding'] = 'gzip';
+                staticFile = staticFile + '.gz';
+                stats = gzipStats;
+                sendBytes();
+            } else {
+                sendBytes();
+            }
+        });
+    } else {
+        sendBytes();
+    }
+}
+
+function parseRange(ctx, stats) {
+    var range = ctx.request.headers['range'],
+        ifRange = ctx.request.headers['if-range'],
+        fileSize = stats.size,
+        ranges = range.substring(6).split(',');
+    if(ifRange) {
+        if(ifRange.match(/^\d{3}/) && ifRange != stats.mtime.getTime()) {
+            return;
+        } else if(!ifRange.match(/^\d{3}/) && ifRange != stats.mtime.toUTCString()) {
+            return;
+        }
+    }
+    if(range.length > 5 && ranges.length == 1) {
+        var range = ranges[0].split('-');
+        if(range[1].length == 0) {
+            range[1] = fileSize;
+        }
+        range[0] = Number(range[0]), range[1] = Number(range[1]);
+        if(range[1] > range[0]) {
+            range[0] = Math.max(range[0], 0);
+            range[1] = Math.min(range[1], fileSize - 1);
+            return range;
+        }
+    }
+}
+
+function satisfiesConditions(stats, ctx) {
+    var mtime = stats.mtime,
+        modifiedSince = new Date(ctx.request.headers['if-modified-since']),
+        noneMatch = Number(ctx.request.headers['if-none-match']);
+
+    if(modifiedSince && modifiedSince >= mtime) {
+        var status = 304;
+    } else if(noneMatch && noneMatch == mtime.getTime()) {
+        var status = 304;
+    }
+
+    if(status) {
+        ctx.extn = defaultViewExtn;
+        ctx.headers['content-type'] = mime.mimes[defaultViewExtn];
+        delete ctx.headers['last-modified'];
+        delete ctx.headers['content-disposition'];
+        ctx.response.writeHead(status, ctx.headers);
+        ctx.response.end();
+        return false;
+    } else {
+        return true;
+    }
+}

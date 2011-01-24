@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-var RequestContext = require('./renderer').RequestContext;
+var RequestContext = require('./context').RequestContext;
 
 exports.api = {};
 

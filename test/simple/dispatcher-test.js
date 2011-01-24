@@ -1,4 +1,5 @@
 var dispatcher = require('../../grasshopper/lib/dispatcher'),
+    context = require('../../grasshopper/lib/context'),
     http = require('http'),
     assert = require('assert'),
     mocks = require('../common/mocks');
@@ -77,6 +78,7 @@ suite.tests = {
 function invoke(method, path, headers, body, route, controller) {
     var req = new mocks.MockRequest(method, path, headers),
         res = new mocks.MockResponse();
+        ctx = new context.RequestContext(req, res);
 
     var invoked = false,
         routes = {};
@@ -88,7 +90,7 @@ function invoke(method, path, headers, body, route, controller) {
         controller.apply(this, arguments);
     };
 
-    dispatcher.dispatch(req, res, new dispatcher.RouteMatcher(routes));
+    dispatcher.dispatch(ctx, new dispatcher.RouteMatcher(routes));
     if(body) {
         req.emit('data', body);
         req.emit('end');

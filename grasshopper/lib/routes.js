@@ -17,7 +17,7 @@
 exports.api = {};
 
 var http = require('http'),
-    renderer = require('./renderer'),
+    context = require('./context'),
     dispatcher = require('./dispatcher'),
     RouteMatcher = dispatcher.RouteMatcher;
 
@@ -109,10 +109,11 @@ function startServer(routes, port, credentials, hostname, callback) {
     }
 
     server.on("request", function(req, res) {
+        var ctx = new context.RequestContext(req, res);
         try {
-            dispatcher.dispatch(req, res, routeMatcher);
+            dispatcher.dispatch(ctx, routeMatcher);
         } catch(e) {
-            renderer._handleError(e, req, res);
+            ctx._handleError(e);
         }
     });
     servers.push(server);

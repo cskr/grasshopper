@@ -17,11 +17,19 @@ suite.setupOnce = function(next) {
             ctx.locale = 'initialized-locale';
         }
     });
+    mocks.mockModule('../../grasshopper/lib/ghp', {
+        fill: function(template, response, model, encoding, viewsDir, ext) {
+            response.write(template + ' ' + JSON.stringify(model) + ' '
+                                + encoding + ' ' + viewsDir + ' ' + ext);
+            response.end();
+        }
+    });
     next();
 };
 
 suite.tearDownOnce = function(next) {
     mocks.unmockModule('../../grasshopper/lib/i18n');
+    mocks.unmockModule('../../grasshopper/lib/ghp');
     next();
 };
 
@@ -51,9 +59,7 @@ suite.tests = {
     },
 
     'Render Text.': function(next) {
-        var req = new MockRequest('GET', '/test.txt', {
-            cookie: 'name=Chandru; city=Bangalore'
-        });
+        var req = new MockRequest('GET', '/test.txt', {});
         var res = new MockResponse();
 
         var ctx = new RequestContext(req, res);
@@ -69,10 +75,46 @@ suite.tests = {
         next();
     },
 
-    'Disable cache.': function(next) {
-        var req = new MockRequest('GET', '/test.txt', {
-            cookie: 'name=Chandru; city=Bangalore'
+    'Render.': function(next) {
+        var req = new MockRequest('GET', '/test.txt', {});
+        var res = new MockResponse();
+
+        var ctx = new RequestContext(req, res);
+        ctx.model = { name: 'Chandru' };
+        ctx.render('demo', function() {
+            assert.deepEqual(res.chunks,
+                ['./demo.txt {"name":"Chandru"} utf8 . txt']);
+            assert.equal(res.statusCode, 200);
+            next();
         });
+    },
+
+    'Render Error.': function(next) {
+        var req = new MockRequest('GET', '/test.txt', {});
+        var res = new MockResponse();
+
+        var ctx = new RequestContext(req, res);
+        ctx.renderError(500, function() {
+            assert.equal(res.statusCode, 500);
+            next();
+        });
+    },
+
+    'Redirect.': function(next) {
+        var req = new MockRequest('GET', '/test.txt', {});
+        var res = new MockResponse();
+
+        var ctx = new RequestContext(req, res);
+        ctx.redirect('/redirected_location', function() {
+            assert.equal(res.statusCode, 302);
+            assert.equal(res.headers['location'], '/redirected_location');
+            assert.ok(!res.writable);
+            next();
+        });
+    },
+
+    'Disable cache.': function(next) {
+        var req = new MockRequest('GET', '/test.txt', {});
         var res = new MockResponse();
 
         var ctx = new RequestContext(req, res);
@@ -120,23 +162,8 @@ suite.tests = {
         next();
     },
 
-    'Render Error.': function(next) {
-        var req = new MockRequest('GET', '/test.txt', {
-            cookie: 'name=Chandru; city=Bangalore'
-        });
-        var res = new MockResponse();
-
-        var ctx = new RequestContext(req, res);
-        ctx.renderError(500, function() {
-            assert.equal(res.statusCode, 500);
-            next();
-        });
-    },
-
     'Add Cookie.': function(next) {
-        var req = new MockRequest('GET', '/test.txt', {
-            cookie: 'name=Chandru; city=Bangalore'
-        });
+        var req = new MockRequest('GET', '/test.txt', {});
         var res = new MockResponse();
 
         var ctx = new RequestContext(req, res);

@@ -16,7 +16,6 @@
 
 var url = require('url'),
     querystring = require('querystring'),
-    renderer = require('./renderer'),
     ParamParser = require('./params').ParamParser,
     multipart = require('./multipart');
 
@@ -39,7 +38,8 @@ exports.api.addFilters = function(regex) {
     filters.push({pattern: regex, filters: filtersArray}); 
 };
 
-exports.dispatch = function(req, res, routeMatcher) {
+exports.dispatch = function(ctx, routeMatcher) {
+    var req = ctx.request, res = ctx.response;
     var urlData = url.parse(req.url, true);
     var path = stripPath(urlData.pathname);
     var params = urlData.query || {};
@@ -49,7 +49,7 @@ exports.dispatch = function(req, res, routeMatcher) {
         if((req.method == 'POST' || req.method == 'PUT')) {
             if(req.headers['content-type'] && req.headers['content-type'].match(/^application\/x-www-form-urlencoded/)) {
                 if(Number(req.headers['content-length']) > maxFormSize) {
-                    new renderer.RequestContext(req, res, {}).renderError(413);
+                    ctx.renderError(413);
                     return;
                 }
                 req.setEncoding('utf8');
@@ -59,27 +59,29 @@ exports.dispatch = function(req, res, routeMatcher) {
                 });
                 req.on('end', function() {
                     try {
-                        params = querystring.parse(dataString);
-                        action.invokeController(new renderer.RequestContext(req, res, splitParams(params)), path);
+                        ctx.params = splitParams(querystring.parse(dataString));
+                        action.invokeController(ctx, path);
                     } catch(e) {
-                        renderer._handleError(e, req, res, params);
+                        ctx._handleError(e);
                     }
                 });
             } else if(req.headers['content-type'] && req.headers['content-type'].match(/^multipart\/form-data/)) {
-                var context = new renderer.RequestContext(req, res, splitParams(params));
-                multipart.parse(context, function() {
-                    action.invokeController(context, path);
+                ctx.params = splitParams(params);
+                multipart.parse(ctx, function() {
+                    action.invokeController(ctx, path);
                 });
             } else {
-                action.invokeController(new renderer.RequestContext(req, res, splitParams(params)), path);
+                ctx.params = splitParams(params);
+                action.invokeController(ctx, path);
             }
         } else {
-            action.invokeController(new renderer.RequestContext(req, res, splitParams(params)), path);
+            ctx.params = splitParams(params);
+            action.invokeController(ctx, path);
         }
     } else {
-        var context = new renderer.RequestContext(req, res, splitParams(params));
-        applyFilters(context, path, function() { 
-            context._renderStatic();
+        ctx.params = splitParams(params);
+        applyFilters(ctx, path, function() { 
+            ctx._renderStatic();
         });
     }
 }
