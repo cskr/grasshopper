@@ -87,17 +87,6 @@ function RequestContext(request, response, secure) {
     this.charset = defaultCharset;
 }
 
-RequestContext.prototype._getExtn = function() {
-    var extn = defaultViewExtn;
-    var path = url.parse(this.request.url).pathname;
-    if(path.match(/\.[^\/]+$/)) {
-        extn = path.substring(path.lastIndexOf('.') + 1);
-        this.requestExtn = extn;
-    }
-
-    return extn;
-};
-
 RequestContext.prototype.challengeAuth = function(type, options) {
     var challengeHeader = type + ' ';
     Object.keys(options).forEach(function(key) {
@@ -242,13 +231,6 @@ RequestContext.prototype.redirect = function(location, cb) {
     }
 };
 
-RequestContext.prototype._writeHead = function() {
-    if(this.charset) {
-        this.headers['content-type'] += '; charset=' + this.charset
-    }
-    this.response.writeHead(this.status, this.headers);
-};
-
 RequestContext.prototype.disableCache = function() {
     this.headers['expires'] = 'Thu, 11 Mar 2010 12:48:43 GMT';
     this.headers['cache-control'] = 'no-store, no-cache, must-revalidate';
@@ -337,6 +319,24 @@ RequestContext.prototype.endSession = function(callback) {
             callback(err)
         }
     });
+};
+
+RequestContext.prototype._getExtn = function() {
+    var extn = defaultViewExtn;
+    var path = url.parse(this.request.url).pathname;
+    if(path.match(/\.[^\/]+$/)) {
+        extn = path.substring(path.lastIndexOf('.') + 1);
+        this.requestExtn = extn;
+    }
+
+    return extn;
+};
+
+RequestContext.prototype._writeHead = function() {
+    if(this.charset) {
+        this.headers['content-type'] += '; charset=' + this.charset
+    }
+    this.response.writeHead(this.status, this.headers);
 };
 
 RequestContext.prototype._renderStatic = function() {
