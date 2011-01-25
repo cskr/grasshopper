@@ -67,7 +67,7 @@ suite.tests = {
         assert.deepEqual(res.headers, {
             'content-type': 'text/plain; charset=UTF-8',
             date: new Date().toUTCString(),
-            'x-powered-by': 'Grasshopper/0.3.3'
+            'x-powered-by': 'Grasshopper/0.3.4'
         });
         assert.deepEqual(res.chunks, ['Hello']);
         assert.deepEqual(res.encodings, ['utf8']);
