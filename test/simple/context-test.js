@@ -180,6 +180,19 @@ suite.tests = {
         assert.equal(ctx.headers['set-cookie'],
                         'language=JS; path=/; secure; HttpOnly');
         next();
+    },
+
+    'Send File.': function(next) {
+        var req = new MockRequest('GET', '/test.txt', {});
+        var res = new MockResponse();
+
+        var ctx = new RequestContext(req, res);
+        ctx.sendFile('../fixtures/static/send_file.txt', function() {
+            assert.equal(res.headers['content-disposition'],
+                            'attachment; filename="send_file.txt"');
+            assert.equal(res.chunks[0].length, 6);
+        });
+        next();
     }
 };
 

@@ -237,11 +237,17 @@ RequestContext.prototype.disableCache = function() {
     this.headers['pragma'] = 'no-cache';
 };
 
-RequestContext.prototype.sendFile = function(file, fileName) {
+RequestContext.prototype.sendFile = function(file, fileName, cb) {
+    if(typeof fileName == 'function') {
+        cb = fileName;
+        fileName = undefined;
+    }
+
     var self = this;
     fs.stat(file, function(err, stats) {
         if(err) {
             self._handleError(err);
+            cb && cb();
         } else {
             if(!fileName) {
                 fileName = file.substring(file.lastIndexOf('/') + 1);
@@ -252,7 +258,7 @@ RequestContext.prototype.sendFile = function(file, fileName) {
                             : 'application/octet-stream';
 
             self.headers['content-disposition'] = 'attachment; filename="' + fileName + '"';
-            sendStatic(file, stats, self);
+            sendStatic(file, stats, self, cb);
         }
     });
 };
@@ -411,7 +417,7 @@ RequestContext.prototype._rotateFlash = function(cb) {
 
 exports.RequestContext = RequestContext;
 
-function sendStatic(staticFile, stats, ctx) {
+function sendStatic(staticFile, stats, ctx, cb) {
     function sendBytes() {
 		if(satisfiesConditions(stats, ctx)) {
 		    ctx.headers['last-modified'] = stats.mtime.toUTCString();
@@ -429,9 +435,10 @@ function sendStatic(staticFile, stats, ctx) {
 
 		    ctx.response.writeHead(ctx.status, ctx.headers);
 		    if(ctx.request.method == 'GET') {
-		        util.pump(stream, ctx.response);
+		        util.pump(stream, ctx.response, cb);
 		    } else {
 		        ctx.response.end();
+                cb && cb();
 		    }
 		}
 	}
