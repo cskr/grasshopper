@@ -15,7 +15,8 @@
  */
 exports.api = {};
 
-var fs = require('fs');
+var fs = require('fs'),
+    vm = require('vm');
  
 var cache = {},
     bufferSize = 8 * 1024;
@@ -95,7 +96,7 @@ function compile(text, helpersCount, fileName) {
         funcBody += "}";
     }
 
-    return process.compile('tmpl = function(out, model, helpers) {'
+    return vm.runInThisContext('tmpl = function(out, model, helpers) {'
                                 + funcBody
                             + '}', fileName);
 }
