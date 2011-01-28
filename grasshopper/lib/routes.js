@@ -17,6 +17,7 @@
 exports.api = {};
 
 var http = require('http'),
+    https = require('https'),
     context = require('./context'),
     dispatcher = require('./dispatcher'),
     RouteMatcher = dispatcher.RouteMatcher;
@@ -101,11 +102,11 @@ function startServer(routes, port, credentials, hostname, callback) {
     }
 
     var routeMatcher = new RouteMatcher(routes);
-    var server = http.createServer();
-
     if(credentials) {
     	securePort = port;
-        server.setSecure(credentials);
+        var server = https.createServer(credentials);
+    } else {
+        var server = http.createServer();
     }
 
     server.on("request", function(req, res) {
