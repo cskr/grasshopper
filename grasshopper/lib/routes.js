@@ -120,7 +120,10 @@ function startServer(routes, port, credentials, hostname, callback) {
 
     if(typeof port == 'number') {
         server.listen(port, hostname, function() {
-            console.log('Hopping at port: ' + port + '. Use Ctrl+C to stop.');
+            var url = (credentials ? 'https://' : 'http://')
+                            + (hostname || 'localhost') + ':'
+                            + port;
+            console.log('Hopping at ' + url + '. Use Ctrl+C to stop.');
             if(callback) callback();
         });
     }
