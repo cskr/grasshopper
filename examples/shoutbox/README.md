@@ -1,3 +1,3 @@
-This example requires [node-couchdb](http://github.com/felixge/node-couchdb).  Install it with these commands,
+This example requires [node-mysql](http://github.com/felixge/node-mysql).  Install it with these commands,
 
-    npm install couchdb
+    npm install mysql
