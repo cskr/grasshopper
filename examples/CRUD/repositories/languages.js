@@ -1,57 +1,97 @@
-var couchdb = require('couchdb'),
-    Language = require('../models').Language,
-    util = require('./couchUtil');
+var mysql = require('mysql'),
+    db_util = require('./db_util'),
+    Language = require('../models').Language;
 
 exports.all = function(cb) {
-    var db = couchdb.createClient().db('ghcrud');
-    db.view('language', 'all', {}, function(err, res) {
-        if(!err) {
-            var languages = util.getValues(res.rows, mapRow);
-        }
-        cb(err, languages);
+    var client = db_util.getClient();
+
+    client.query('select * from languages, languages_paradigms '
+                    + 'where language_id = id', function(err, results) {
+        client.end(function() {
+            cb(err, db_util.combineAndMap(results, 'id', toLanguage));
+        });
     });
 };
 
 exports.get = function(id, cb) {
-    var db = couchdb.createClient().db('ghcrud');
-    db.getDoc(id, function(err, res) {
-        if(!err) {
-            var language = util.getValues([{value: res}], mapRow)[0];
-        }
-        cb(err, language);
+    var client = db_util.getClient();
+
+    client.query('select * from languages, languages_paradigms '
+                        + 'where language_id = id and id = ?', [id],
+    function(err, result) {
+        client.end(function() {
+            cb(err, db_util.combineAndMap(result, 'id', toLanguage)[0]);
+        });
     });
 };
 
 exports.save = function(language, cb) {
-    var doc = util.getDoc(language, mapValue);
-    var db = couchdb.createClient().db('ghcrud');
-    db.saveDoc(doc, function(err) {
-        cb(err);
+    var client = db_util.getClient();
+
+    if(language.id() === undefined) {
+        var query = 'insert into languages (name, static, dynamic, '
+                    + 'execution_id) values (?, ?, ?, ?)';
+        var params = [language.name(), !!language.static(),
+                        !!language.dynamic(), language.executionId()];
+    } else {
+        var query = 'update languages set name = ?, static = ?, dynamic = ?, '
+                        + 'execution_id = ? where id = ?';
+        var params = [language.name(), !!language.static(),
+                        !!language.dynamic(), language.executionId(),
+                        language.id()];
+    }
+
+    var id = language.id();
+    client.query(query, params, function(err, res) {
+        id = res.insertId ? res.insertId : id;
+
+        client.query('delete from languages_paradigms where language_id = ?',
+                        [id]);
+
+        var params = [];
+        var query = 'insert into languages_paradigms values ';
+
+        language.paradigmIds().forEach(function(pid) {
+            query += '(?, ?), ';
+            params = params.concat([id, pid]);
+        });
+
+        client.query(query.substring(0, query.length - 2), params,
+        function(err) {
+            client.end(function() {
+                cb(err);
+            });
+        });
     });
 };
 
 exports.remove = function(language, cb) {
-    var db = couchdb.createClient().db('ghcrud');
-    db.removeDoc(language._id, language._rev, function(err, res) {
-        cb(err);
-    });
+    var client = db_util.getClient();
+
+    if(language.id() != undefined) {
+        client.query('delete from languages_paradigms where language_id = ?',
+                        [language.id()]);
+        client.query('delete from languages where id = ?', [language.id()],
+        function(err) {
+            client.end(function() {
+                cb(err);
+            });
+        });
+    } else {
+        cb();
+    }
 };
 
-function mapRow(row, cb) {
-    var p = new Language();
-    p.name(row.value.name)
-     .static(row.value.static)
-     .dynamic(row.value.dynamic)
-     .paradigmIds(row.value.paradigmIds)
-     .executionId(row.value.executionId);
+function toLanguage(rows) {
+    var language = new Language();
+    var row = rows[0];
+    language.id(row.id).name(row.name).static(!!row.static)
+            .dynamic(!!row.dynamic).executionId(row.execution_id);
+    language.paradigmIds([]);
 
-    return p;
-}
+    rows.forEach(function(row) {
+        language.paradigmIds().push(row.paradigm_id);
+    });
 
-function mapValue(language, row) {
-    row.name = language.name();
-    row.static = language.static();
-    row.dynamic = language.dynamic();
-    row.executionId = language.executionId();
-    row.paradigmIds = language.paradigmIds();
+    return language;
 }

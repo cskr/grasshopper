@@ -1,50 +1,64 @@
-var couchdb = require('couchdb'),
-    Paradigm = require('../models').Paradigm,
-    util = require('./couchUtil');
+var mysql = require('mysql'),
+    db_util = require('./db_util'),
+    Paradigm = require('../models').Paradigm;
 
 exports.all = function(cb) {
-    var db = couchdb.createClient().db('ghcrud');
-    db.view('paradigm', 'all', {}, function(err, res) {
-        if(!err) {
-            var paradigms = util.getValues(res.rows, mapRow);
-        }
-        cb(err, paradigms);
+    var client = db_util.getClient();
+
+    client.query('select * from paradigms', function(err, results) {
+        client.end(function() {
+            cb(err, db_util.mapRows(results, toParadigm));
+        });
     });
 };
 
 exports.get = function(id, cb) {
-    var db = couchdb.createClient().db('ghcrud');
-    db.getDoc(id, function(err, res) {
-        if(!err) {
-            var paradigm = util.getValues([{value: res}], mapRow)[0];
-        }
-        cb(err, paradigm);
+    var client = db_util.getClient();
+
+    client.query('select * from paradigms where id = ?', [id],
+    function(err, result) {
+        client.end(function() {
+            cb(err, db_util.mapRows(result, toParadigm)[0]);
+        });
     });
 };
 
 exports.save = function(paradigm, cb) {
-    var doc = util.getDoc(paradigm, mapValue);
-    var db = couchdb.createClient().db('ghcrud');
-    db.saveDoc(doc, function(err) {
-        cb(err);
+    var client = db_util.getClient();
+
+    if(paradigm.id() === undefined) {
+        var query = 'insert into paradigms (name, description) values (?, ?)';
+        var params = [paradigm.name(), paradigm.description()];
+    } else {
+        var query = 'update paradigms set name = ?, description = ? '
+                        + 'where id = ?';
+        var params = [paradigm.name(), paradigm.description(), paradigm.id()];
+    }
+
+    client.query(query, params, function(err) {
+        client.end(function() {
+            cb(err);
+        });
     });
 };
 
 exports.remove = function(paradigm, cb) {
-    var db = couchdb.createClient().db('ghcrud');
-    db.removeDoc(paradigm._id, paradigm._rev, function(err, res) {
-        cb(err);
-    });
+    var client = db_util.getClient();
+
+    if(paradigm.id() != undefined) {
+        client.query('delete from paradigms where id = ?', [paradigm.id()],
+        function(err) {
+            client.end(function() {
+                cb(err);
+            });
+        });
+    } else {
+        cb();
+    }
 };
 
-function mapRow(row, cb) {
-    var p = new Paradigm();
-    p.name(row.value.name)
-            .description(row.value.description);
-    return p;
-}
-
-function mapValue(paradigm, row) {
-    row.name = paradigm.name();
-    row.description = paradigm.description();
+function toParadigm(row) {
+    var paradigm = new Paradigm();
+    paradigm.id(row.id).name(row.name).description(row.description);
+    return paradigm;
 }

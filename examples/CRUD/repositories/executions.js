@@ -1,50 +1,64 @@
-var couchdb = require('couchdb'),
-    Execution = require('../models').Execution,
-    util = require('./couchUtil');
+var mysql = require('mysql'),
+    db_util = require('./db_util'),
+    Execution = require('../models').Execution;
 
 exports.all = function(cb) {
-    var db = couchdb.createClient().db('ghcrud');
-    db.view('execution', 'all', {}, function(err, res) {
-        if(!err) {
-            var executions = util.getValues(res.rows, mapRow);
-        }
-        cb(err, executions);
+    var client = db_util.getClient();
+
+    client.query('select * from executions', function(err, results) {
+        client.end(function() {
+            cb(err, db_util.mapRows(results, toExecution));
+        });
     });
 };
 
 exports.get = function(id, cb) {
-    var db = couchdb.createClient().db('ghcrud');
-    db.getDoc(id, function(err, res) {
-        if(!err) {
-            var execution = util.getValues([{value: res}], mapRow)[0];
-        }
-        cb(err, execution);
+    var client = db_util.getClient();
+
+    client.query('select * from executions where id = ?', [id],
+    function(err, result) {
+        client.end(function() {
+            cb(err, db_util.mapRows(result, toExecution)[0]);
+        });
     });
 };
 
 exports.save = function(execution, cb) {
-    var doc = util.getDoc(execution, mapValue);
-    var db = couchdb.createClient().db('ghcrud');
-    db.saveDoc(doc, function(err) {
-        cb(err);
+    var client = db_util.getClient();
+
+    if(execution.id() === undefined) {
+        var query = 'insert into executions (name, description) values (?, ?)';
+        var params = [execution.name(), execution.description()];
+    } else {
+        var query = 'update executions set name = ?, description = ? '
+                        + 'where id = ?';
+        var params = [execution.name(), execution.description(), execution.id()];
+    }
+
+    client.query(query, params, function(err) {
+        client.end(function() {
+            cb(err);
+        });
     });
 };
 
 exports.remove = function(execution, cb) {
-    var db = couchdb.createClient().db('ghcrud');
-    db.removeDoc(execution._id, execution._rev, function(err, res) {
-        cb(err);
-    });
+    var client = db_util.getClient();
+
+    if(execution.id() != undefined) {
+        client.query('delete from executions where id = ?', [execution.id()],
+        function(err) {
+            client.end(function() {
+                cb(err);
+            });
+        });
+    } else {
+        cb();
+    }
 };
 
-function mapRow(row, cb) {
-    var p = new Execution();
-    p.name(row.value.name)
-            .description(row.value.description);
-    return p;
-}
-
-function mapValue(execution, row) {
-    row.name = execution.name();
-    row.description = execution.description();
+function toExecution(row) {
+    var execution = new Execution();
+    execution.id(row.id).name(row.name).description(row.description);
+    return execution;
 }

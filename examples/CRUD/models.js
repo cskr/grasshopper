@@ -32,5 +32,5 @@ Language.prototype.validate = function() {
     }
 };
 
-exports.Language = gh.initModel(Language, 'name', 'static',
+exports.Language = gh.initModel(Language, 'id', 'name', 'static',
                                 'dynamic', 'executionId', 'paradigmIds');

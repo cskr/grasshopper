@@ -7,7 +7,11 @@ gh.configure({
 });
 
 [
-    './controllers/home', './controllers/paradigms', './controllers/executions', './controllers/languages'
+    './controllers/home',
+    './controllers/paradigms',
+    './controllers/executions',
+    './controllers/languages'
+
 ].forEach(function(controller) {
     require(controller);
 });
