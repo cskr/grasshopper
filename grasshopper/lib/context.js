@@ -32,6 +32,7 @@ var viewsDir = '.',
     defaultCharset = 'UTF-8',
     flashEnabled = true,
     layout = undefined,
+    logErrors = true,
     errorHandler = undefined;
 
 exports.configure = function(config) {
@@ -47,6 +48,8 @@ exports.configure = function(config) {
         defaultEncoding = config.defaultEncoding;
     if(config.layout)
         layout = config.layout;
+    if(config.logErrors !== undefined)
+        logErrors = config.logErrors;
     if(config.errorHandler)
         errorHandler = config.errorHandler;
     if(config.flashEnabled !== undefined)
@@ -389,7 +392,7 @@ RequestContext.prototype._handleError = function(err) {
     }
 
     function defaultHandler() {
-        if(err) {
+        if(logErrors && err) {
             util.debug(err.stack);
         }
         self.renderError(500, err);
