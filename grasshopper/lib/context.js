@@ -390,7 +390,7 @@ RequestContext.prototype._handleError = function(err) {
 
     function defaultHandler() {
         if(err) {
-            console.log(err.stack);
+            util.debug(err.stack);
         }
         self.renderError(500, err);
     }
