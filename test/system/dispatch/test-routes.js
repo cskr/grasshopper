@@ -2,7 +2,11 @@ var gh = require('../../../grasshopper');
 
 gh.configure({
     viewsDir: __dirname + '/views',
-    staticsDir: __dirname + '/statics'
+    staticsDir: __dirname + '/statics',
+    errorHandler: function(err) {
+        this.status = 500;
+        this.renderText(err.message);
+    }
 });
 
 gh.addFilters(/\/filtered/, function(next) {
@@ -38,4 +42,8 @@ gh.post('/upload', function() {
 
 gh.get('/send_file', function(args) {
     this.sendFile(__dirname + '/statics/test.pdf');
+});
+
+gh.get('/error', function(args) {
+    throw new Error('Error in controller.');
 });

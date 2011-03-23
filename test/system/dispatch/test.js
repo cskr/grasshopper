@@ -115,6 +115,16 @@ suite.tests = {
             assert.equal(res.headers['content-length'], 51560);
             next();
         });
+    },
+
+    'Custom Error Handler.': function(next) {
+        testUtil.invoke('GET', '/error', {}, function(res) {
+            res.on('data', function(chunk) {
+                assert.equal(res.statusCode, 500);
+                assert.equal(chunk, 'Error in controller.');
+                next();
+            });
+        });
     }
 }
 

@@ -193,6 +193,24 @@ suite.tests = {
             assert.equal(res.chunks[0].length, 6);
         });
         next();
+    },
+
+    'Custom Error Handler.': function(next) {
+        context.configure({
+            errorHandler: function(err, defaultHandler) {
+                this.status = 500;
+                this.renderText(err.message);
+            }
+        });
+
+        var req = new mocks.MockRequest('GET', '/', {}),
+            res = new mocks.MockResponse();
+
+        var ctx = new RequestContext(req, res);
+        ctx._handleError(new Error('Some Error'));
+        assert.deepEqual(res.statusCode, 500);
+        assert.deepEqual(res.chunks, ['Some Error']);
+        next();
     }
 };
 

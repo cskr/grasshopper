@@ -31,7 +31,8 @@ var viewsDir = '.',
     defaultEncoding = 'utf8',
     defaultCharset = 'UTF-8',
     flashEnabled = true,
-    layout = undefined;
+    layout = undefined,
+    errorHandler = undefined;
 
 exports.configure = function(config) {
     if(config.viewsDir)
@@ -46,6 +47,8 @@ exports.configure = function(config) {
         defaultEncoding = config.defaultEncoding;
     if(config.layout)
         layout = config.layout;
+    if(config.errorHandler)
+        errorHandler = config.errorHandler;
     if(config.flashEnabled !== undefined)
         flashEnabled = config.flashEnabled;
 };
@@ -378,10 +381,19 @@ RequestContext.prototype._renderStatic = function() {
 };
 
 RequestContext.prototype._handleError = function(err) {
-    if(err) {
-        console.log(err.stack);
+    var self = this;
+    if(errorHandler == undefined) {
+        defaultHandler();
+    } else {
+        errorHandler.call(this, err, defaultHandler);
     }
-    this.renderError(500, err);
+
+    function defaultHandler() {
+        if(err) {
+            console.log(err.stack);
+        }
+        self.renderError(500, err);
+    }
 };
 
 RequestContext.prototype._beginSession = function(callback) {
