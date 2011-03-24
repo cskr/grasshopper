@@ -87,9 +87,7 @@ exports.dispatch = function(ctx, routeMatcher) {
 }
 
 function stripPath(path) {
-    if(path != '/' && path.match(/\/$/)) {
-        return path.substring(0, path.length - 1);
-    } else if(path.match(/\.[^\/]+$/)) {
+    if(path.match(/\.[^\/]+$/)) {
         return path.substring(0, path.lastIndexOf('.'));
     } else {
         return path;
