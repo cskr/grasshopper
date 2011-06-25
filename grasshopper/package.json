@@ -2,9 +2,11 @@
     "name" : "grasshopper",
     "description" : "A feature-rich and flexible MVC framework.",
     "version" : "0.4.1",
-    "contributors": [ 
-        { "name": "Chandra Sekar S", "email": "chandru.in@gmail.com" }
-    ],
+    "author": {
+        "name": "Chandra Sekar S",
+        "url": "http://tuxychandru.blogspot.com",
+        "email": "chandru.in@gmail.com"
+    },
     "dependencies": {
         "formidable": ">=0.9.9"
     },
