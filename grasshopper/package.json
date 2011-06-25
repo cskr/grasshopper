@@ -11,5 +11,6 @@
         "formidable": ">=0.9.9"
     },
     "engines" : { "node": ">= 0.4.0" },
-    "main" : "."
+    "main" : ".",
+    "bin" : {"grasshopper": "./cli.js"}
 }

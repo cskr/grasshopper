@@ -48,6 +48,25 @@ Hello World
 5. From your applications directory invoke the command `node hello.js`.
 6. Point your browser at http://localhost:8080.
 
+Creating a Project
+------------------
+
+1. Install grashopper globally,
+
+    sudo npm install -g grasshopper
+
+2. Create your new project,
+
+    grasshopper <project_name>
+
+3. Install dependencies for the project,
+
+    cd <project_name> && npm install -d
+
+4. Start the server and visit http://localhost:8080,
+
+    node boot.js
+
 Arguments in URL and Template Files
 -----------------------------------
 
