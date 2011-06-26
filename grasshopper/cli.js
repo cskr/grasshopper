@@ -56,13 +56,13 @@ function simpleTemplate() {
     ].join('\n'));
 
     fs.writeFileSync(appName + '/boot.js', [
-        "var gh = require('grasshopper');",
+        "var gh = require('grasshopper');\n",
         'gh.configure({',
         "    viewsDir: __dirname + '/views',",
         "    staticsDir: __dirname + '/statics',",
         "    layout: __dirname + '/views/layout',",
         '});\n',
         "require('./routes');\n",
-        'gh.serve(8080)\n'
+        'gh.serve(8080);\n'
     ].join('\n'));
 }
