@@ -16,17 +16,18 @@ fs.mkdirSync(appName + '/statics', 0700);
 fs.mkdirSync(appName + '/views', 0700);
 simpleTemplate();
 
-pkg = {
-    name: appName,
-    version: '1.0.0',
-    dependencies: {
-        'grasshopper': '0.4.1',
-    },
-    engines: {
-        'node': '>=' + process.versions.node
-    }
-}
-fs.writeFileSync(appName + '/package.json', JSON.stringify(pkg) + '\n');
+fs.writeFileSync(appName + '/package.json', [
+        '{',
+        '    "name" : ' + '"' + appName + '",',
+        '    "version" : "1.0.0",',
+        '    "dependencies" : {',
+        '        "grasshopper" : "0.4.1"',
+        '    },',
+        '    "engines" : {',
+        '        "node" : ">=' + process.versions.node + '"',
+        '    }',
+        '}\n'
+    ].join('\n'));
 
 console.log('Application has been created in ' + process.cwd() + '/' + appName + '.');
 console.log("Use 'cd " + appName + " && npm install -d && node boot.js'  to start it.");
