@@ -34,6 +34,7 @@ console.log("Use 'cd " + appName + " && npm install -d && node boot.js'  to star
 
 function simpleTemplate() {
     fs.writeFileSync(appName + '/views/layout.html', [
+        '<!doctype html>',
         '<html>',
         '    <head>',
         '        <title><%= title %> - ' + appName + '</title>',
