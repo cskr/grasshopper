@@ -15,6 +15,7 @@ fs.mkdirSync(appName, 0700);
 fs.mkdirSync(appName + '/statics', 0700);
 fs.mkdirSync(appName + '/views', 0700);
 simpleTemplate();
+errorPages();
 
 fs.writeFileSync(appName + '/package.json', [
         '{',
@@ -66,5 +67,58 @@ function simpleTemplate() {
         '});\n',
         "require('./routes');\n",
         'gh.serve(8080);\n'
+    ].join('\n'));
+}
+
+function errorPages() {
+    fs.writeFileSync(appName + '/views/404.html', [
+        '<!doctype html>',
+        '<html>',
+        '    <head>',
+        '        <title>Not Found - ' + appName + '</title>',
+        '    </head>',
+        '    <body>',
+        '        <h1>Not Found!</h1>',
+        '    </body>',
+        '</html>\n'
+    ].join('\n'));
+
+    fs.writeFileSync(appName + '/views/403.html', [
+        '<!doctype html>',
+        '<html>',
+        '    <head>',
+        '        <title>Forbidden - ' + appName + '</title>',
+        '    </head>',
+        '    <body>',
+        '        <h1>Forbidden!</h1>',
+        '    </body>',
+        '</html>\n'
+    ].join('\n'));
+
+    fs.writeFileSync(appName + '/views/413.html', [
+        '<!doctype html>',
+        '<html>',
+        '    <head>',
+        '        <title>Request Entity Too Large - ' + appName + '</title>',
+        '    </head>',
+        '    <body>',
+        '        <h1>Request Entity Too Large!</h1>',
+        '    </body>',
+        '</html>\n'
+    ].join('\n'));
+
+    fs.writeFileSync(appName + '/views/500.html', [
+        '<!doctype html>',
+        '<html>',
+        '    <head>',
+        '        <title>Internal Server Error - ' + appName + '</title>',
+        '    </head>',
+        '    <body>',
+        '        <h1>Internal Server Error!</h1>',
+        '<pre style="background-color: #BDBDBD; padding: 10px">',
+        '<%= error.stack %>',
+        '</pre>',
+        '    </body>',
+        '</html>\n'
     ].join('\n'));
 }
