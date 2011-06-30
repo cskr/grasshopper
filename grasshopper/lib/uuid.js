@@ -11,7 +11,8 @@ Stripped down by Chandra Sekar S to include only the fast version.
 
 var CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
 
-exports.generateUUID = function() {
+exports.api = {};
+exports.api.generateUUID = function() {
     var chars = CHARS, uuid = new Array(36), rnd=0, r;
 
     for (var i = 0; i < 36; i++) {

@@ -400,7 +400,7 @@ RequestContext.prototype._handleError = function(err) {
 };
 
 RequestContext.prototype._beginSession = function(callback) {
-    var sessionId = crypto.createHash('sha1').update(uuid.generateUUID()).digest('hex');
+    var sessionId = crypto.createHash('sha1').update(uuid.api.generateUUID()).digest('hex');
     var self = this;
     session.getSessionStore().beginSession(sessionId, function(err) {
         if(!err) {
