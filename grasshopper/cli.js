@@ -3,9 +3,14 @@
 var fs = require('fs');
 
 var args = process.argv.slice(2);
+var mvc = false;
 
 while((arg = args.shift()) !== undefined) {
     switch(arg) {
+        case '-m':
+        case '--mvc':
+            mvc = true;
+            break;
         default:
             var appName = arg;
     }
@@ -16,6 +21,9 @@ fs.mkdirSync(appName + '/statics', 0700);
 fs.mkdirSync(appName + '/views', 0700);
 simpleTemplate();
 errorPages();
+if(mvc) {
+    mvcTemplate();
+}
 
 fs.writeFileSync(appName + '/package.json', [
         '{',
@@ -120,5 +128,23 @@ function errorPages() {
         '</pre>',
         '    </body>',
         '</html>\n'
+    ].join('\n'));
+}
+
+function mvcTemplate() {
+    fs.mkdirSync(appName + '/controllers', 0700);
+    fs.mkdirSync(appName + '/models', 0700);
+
+    fs.writeFileSync(appName + '/controllers/home.js', [
+        "var gh = require('grasshopper');\n",
+        "gh.get('/', function() {",
+        "    this.model.title = 'Home';",
+        "    this.render('index');",
+        '});\n'
+    ].join('\n'));
+
+    fs.writeFileSync(appName + '/routes.js', [
+        "var gh = require('grasshopper');\n",
+        "gh.requireAll(__dirname + '/controllers');\n",
     ].join('\n'));
 }
