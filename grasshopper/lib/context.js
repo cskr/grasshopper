@@ -16,7 +16,6 @@
 var url = require('url'),
     fs = require('fs'),
     util = require('util'),
-    crypto = require('crypto'),
     mime = require('./mime'),
     uuid = require('./uuid'),
     session = require('./session'),
@@ -400,7 +399,7 @@ RequestContext.prototype._handleError = function(err) {
 };
 
 RequestContext.prototype._beginSession = function(callback) {
-    var sessionId = crypto.createHash('sha1').update(uuid.api.generateUUID()).digest('hex');
+    var sessionId = new Buffer(uuid.api.generateUUID()).toString('base64');
     var self = this;
     session.getSessionStore().beginSession(sessionId, function(err) {
         if(!err) {
