@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
+var fs = require('fs');
+
 var configurables = [];
 
-require('fs').readdirSync(__dirname).forEach(function(file) {
+fs.readdirSync(__dirname).forEach(function(file) {
     if(file == 'grasshopper.js')
         return;
 
@@ -37,6 +39,17 @@ exports.configure = function(config) {
     configurables.forEach(function(configurable) {
         configurable.configure(config);
     });
+};
+
+exports.requireAll = function(dirName) {
+    var mods = {};
+    fs.readdirSync(dirName).forEach(function(file) {
+        if(file.substring(file.length - 3) == '.js') {
+            var modName = file.substring(0, file.length - 3);
+            mods[modName] = require(dirName + '/' + modName);
+        }
+    });
+    return mods;
 };
 
 // Safety net
