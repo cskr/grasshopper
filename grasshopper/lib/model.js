@@ -30,6 +30,7 @@ exports.api.initModel = function(modelCtor, props) {
     }
 
     modelCtor.prototype.update = update;
+    modelCtor.prototype.unwrapModel = unwrapModel;
     modelCtor.prototype.isValid = isValid;
     modelCtor.prototype.addError = addError;
     modelCtor.prototype.validateRequired = validateRequired;
@@ -100,6 +101,33 @@ function update(props, converter, complete) {
         }
     }
     return this;
+}
+
+function unwrapModel() {
+    var unwrapped = {}, self = this;
+    for(prop in this.constructor.props) {
+        if(self[prop]() !== undefined) {
+            var val = self[prop]();
+            if(Array.isArray(val)) {
+                for(var i = 0; i < val.length; i++) {
+                    val[i] = getVal(val[i]);
+                }
+            } else {
+                val = getVal(val);
+            }
+            unwrapped[prop] = val;
+        }
+    };
+
+    return unwrapped;
+}
+
+function getVal(val) {
+    if(typeof val.unwrapModel == 'function') {
+        return val.unwrapModel();
+    } else {
+        return val;
+    }
 }
 
 function isValid() {

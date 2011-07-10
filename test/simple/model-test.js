@@ -98,6 +98,31 @@ suite.tests = {
         assert.equal(p.errors['dob'][0], 'Person.dob.date');
         assert.equal(p.errors['someProp'][0], 'Person.someProp.pattern');
         next();
+    },
+
+    'Unwrap Model.': function(next) {
+        var p = new Person();
+        p.update({sex: 'Male', age: 'ABC', friends: [{
+            sex: 'Male', age: 'DEF'
+        }]}, function(prop, val, cb) {
+            if(prop == 'friends') {
+                var retVal = [];
+                val.forEach(function(val) {
+                    retVal.push(new Person().update(val));
+                });
+            }
+
+            cb(retVal);
+        });
+
+        assert.deepEqual(p.unwrapModel(), {
+            age: 'ABC',
+            sex: 'Male',
+            friends: [{
+                sex: 'Male', age: 'DEF'
+            }]
+        });
+        next();
     }
 };
 
