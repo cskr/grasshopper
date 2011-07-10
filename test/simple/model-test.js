@@ -54,6 +54,12 @@ suite.tests = {
         next();
     },
 
+    'Update array property with [].': function(next) {
+        var p = new Person().update({'friends[]': ['a', 'b']});
+        assert.deepEqual(p.friends(), ['a', 'b']);
+        next();
+    },
+
     'Update array property without prefix.': function(next) {
         var p = new Person().update({friends: ['a', 'b']});
         assert.equal(p.friends(), 'a');
