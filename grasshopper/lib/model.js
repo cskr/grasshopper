@@ -103,28 +103,43 @@ function update(props, converter, complete) {
     return this;
 }
 
-function unwrapModel() {
+function unwrapModel(locale) {
     var unwrapped = {}, self = this;
-    for(prop in this.constructor.props) {
+    for(var prop in this.constructor.props) {
         if(self[prop]() !== undefined) {
-            var val = self[prop]();
-            if(Array.isArray(val)) {
-                for(var i = 0; i < val.length; i++) {
-                    val[i] = getVal(val[i]);
+            var propVal = self[prop]();
+            if(Array.isArray(propVal)) {
+                var val = [];
+                for(var i = 0; i < propVal.length; i++) {
+                    val.push(getVal(propVal[i], locale));
                 }
             } else {
-                val = getVal(val);
+                var val = getVal(propVal, locale);
             }
             unwrapped[prop] = val;
         }
     };
 
+    if(this.errors) {
+        unwrapped.errors = {};
+        for(var field in this.errors) {
+            for( var i = 0; i < this.errors[field].length; i++) {
+                unwrapped.errors[field] = [];
+                var errKey = this.errors[field][i];
+                if(locale)
+                    unwrapped.errors[field].push(locale[errKey]);
+                else
+                    unwrapped.errors[field].push(errKey);
+            }
+        }
+    }
+
     return unwrapped;
 }
 
-function getVal(val) {
+function getVal(val, locale) {
     if(typeof val.unwrapModel == 'function') {
-        return val.unwrapModel();
+        return val.unwrapModel(locale);
     } else {
         return val;
     }

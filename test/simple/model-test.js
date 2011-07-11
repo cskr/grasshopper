@@ -102,8 +102,8 @@ suite.tests = {
 
     'Unwrap Model.': function(next) {
         var p = new Person();
-        p.update({sex: 'Male', age: 'ABC', friends: [{
-            sex: 'Male', age: 'DEF'
+        p.update({sex: 'M', age: 28, friends: [{
+            sex: 'F', age: 27
         }]}, function(prop, val, cb) {
             if(prop == 'friends') {
                 var retVal = [];
@@ -116,11 +116,41 @@ suite.tests = {
         });
 
         assert.deepEqual(p.unwrapModel(), {
-            age: 'ABC',
-            sex: 'Male',
+            age: 28, sex: 'M',
             friends: [{
-                sex: 'Male', age: 'DEF'
-            }]
+                sex: 'F', age: 27,
+                errors: {
+                    name: ['Name is required.'],
+                    dob: ['Person.dob.date'],
+                    someProp: ['Person.someProp.pattern']
+                }
+            }],
+            errors: {
+                name: ['Name is required.'],
+                dob: ['Person.dob.date'],
+                someProp: ['Person.someProp.pattern']
+            }
+        });
+
+        assert.deepEqual(p.unwrapModel({
+            'Person.dob.date' : 'Bad date',
+            'Person.someProp.pattern' : 'Bad pattern',
+            'Name is required.' : 'Name is required.'
+        }), {
+            age: 28, sex: 'M',
+            friends: [{
+                sex: 'F', age: 27,
+                errors: {
+                    name: ['Name is required.'],
+                    dob: ['Bad date'],
+                    someProp: ['Bad pattern']
+                }
+            }],
+            errors: {
+                name: ['Name is required.'],
+                dob: ['Bad date'],
+                someProp: ['Bad pattern']
+            }
         });
         next();
     }
