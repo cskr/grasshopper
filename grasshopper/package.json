@@ -1,7 +1,7 @@
 {
     "name" : "grasshopper",
     "description" : "A feature-rich and flexible MVC framework.",
-    "version" : "0.4.1",
+    "version" : "0.4.2",
     "author": {
         "name": "Chandra Sekar S",
         "url": "http://tuxychandru.blogspot.com",
