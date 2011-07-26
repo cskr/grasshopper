@@ -71,7 +71,7 @@ function simpleTemplate() {
         'gh.configure({',
         "    viewsDir: __dirname + '/views',",
         "    staticsDir: __dirname + '/statics',",
-        "    layout: __dirname + '/views/layout',",
+        "    layout: __dirname + '/views/layout'",
         '});\n',
         "require('./routes');\n",
         'gh.serve(8080);\n'
