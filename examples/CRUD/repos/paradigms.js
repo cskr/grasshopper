@@ -1,6 +1,6 @@
 var mysql = require('mysql'),
     db_util = require('./db_util'),
-    Paradigm = require('../models').Paradigm;
+    Paradigm = require('../models/paradigm').Paradigm;
 
 exports.all = function(cb) {
     var client = db_util.getClient();

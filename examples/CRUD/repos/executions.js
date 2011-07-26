@@ -1,6 +1,6 @@
 var mysql = require('mysql'),
     db_util = require('./db_util'),
-    Execution = require('../models').Execution;
+    Execution = require('../models/execution').Execution;
 
 exports.all = function(cb) {
     var client = db_util.getClient();

@@ -1,6 +1,6 @@
 var gh = require('grasshopper'),
-    executionRepo = require('../repositories/executions'),
-    Execution = require('../models').Execution;
+    executionRepo = require('../repos/executions'),
+    Execution = require('../models/execution').Execution;
 
 gh.get('/executions', function() {
     var self = this;

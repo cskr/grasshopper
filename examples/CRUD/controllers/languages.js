@@ -1,8 +1,8 @@
 var gh = require('grasshopper'),
-    languageRepo = require('../repositories/languages'),
-    executionRepo = require('../repositories/executions'),
-    paradigmRepo = require('../repositories/paradigms'),
-    Language = require('../models').Language;
+    languageRepo = require('../repos/languages'),
+    executionRepo = require('../repos/executions'),
+    paradigmRepo = require('../repos/paradigms'),
+    Language = require('../models/language').Language;
 
 gh.get('/languages', function() {
     var self = this;

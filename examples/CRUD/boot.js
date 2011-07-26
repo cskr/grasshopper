@@ -1,19 +1,12 @@
 var gh = require('grasshopper');
 
 gh.configure({
-    viewsDir: './views',
-    layout: 'layout',
+    viewsDir: __dirname + '/views',
+    staticsDir: __dirname + '/statics',
+    layout: __dirname + '/views/layout',
     locales: require('./locales')
 });
 
-[
-    './controllers/home',
-    './controllers/paradigms',
-    './controllers/executions',
-    './controllers/languages'
-
-].forEach(function(controller) {
-    require(controller);
-});
+require('./routes');
 
 gh.serve(8080);

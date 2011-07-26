@@ -1,6 +1,6 @@
 var gh = require('grasshopper'),
-    paradigmRepo = require('../repositories/paradigms'),
-    Paradigm = require('../models').Paradigm;
+    paradigmRepo = require('../repos/paradigms'),
+    Paradigm = require('../models/paradigm').Paradigm;
 
 gh.get('/paradigms', function() {
     var self = this;

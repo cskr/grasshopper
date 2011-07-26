@@ -1,6 +1,6 @@
 var mysql = require('mysql'),
     db_util = require('./db_util'),
-    Language = require('../models').Language;
+    Language = require('../models/language').Language;
 
 exports.all = function(cb) {
     var client = db_util.getClient();

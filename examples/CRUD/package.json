@@ -1,0 +1,10 @@
+{
+    "name" : "CRUD",
+    "version" : "1.0.0",
+    "dependencies" : {
+        "grasshopper" : "0.4.2"
+    },
+    "engines" : {
+        "node" : ">=0.4.10"
+    }
+}
