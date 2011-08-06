@@ -12,5 +12,6 @@
     },
     "engines" : { "node": ">= 0.4.0" },
     "main" : ".",
-    "bin" : {"grasshopper": "./cli.js"}
+    "bin" : {"grasshopper": "./cli.js"},
+    "repository" : "git://github.com/tuxychandru/grasshopper.git"
 }
