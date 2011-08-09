@@ -89,6 +89,20 @@ suite.tests = {
         });
     },
 
+    'Render Alternate Layout.': function(next) {
+        var req = new MockRequest('GET', '/test.txt', {});
+        var res = new MockResponse();
+
+        var ctx = new RequestContext(req, res);
+        ctx.model = { name: 'Chandru' };
+        ctx.render('demo', 'alt', function() {
+            assert.deepEqual(res.chunks,
+                ['alt.txt {"name":"Chandru","view":"demo"} utf8 . txt']);
+            assert.equal(res.statusCode, 200);
+            next();
+        });
+    },
+
     'Render Error.': function(next) {
         var req = new MockRequest('GET', '/test.txt', {});
         var res = new MockResponse();
