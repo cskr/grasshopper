@@ -2,7 +2,7 @@
     "name" : "CRUD",
     "version" : "1.0.0",
     "dependencies" : {
-        "grasshopper" : "0.4.2"
+        "grasshopper" : "0.4.3"
     },
     "engines" : {
         "node" : ">=0.4.10"

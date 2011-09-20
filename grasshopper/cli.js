@@ -30,7 +30,7 @@ fs.writeFileSync(appName + '/package.json', [
         '    "name" : ' + '"' + appName + '",',
         '    "version" : "1.0.0",',
         '    "dependencies" : {',
-        '        "grasshopper" : "0.4.2"',
+        '        "grasshopper" : "0.4.3"',
         '    },',
         '    "engines" : {',
         '        "node" : ">=' + process.versions.node + '"',
