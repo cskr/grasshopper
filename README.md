@@ -57,11 +57,11 @@ Creating a Project
 
 2. Create your new project,
 
-    grasshopper <project_name>
+    grasshopper project_name
 
 3. Install dependencies for the project,
 
-    cd <project_name> && npm install -d
+    cd project_name && npm install -d
 
 4. Start the server and visit http://localhost:8080,
 
