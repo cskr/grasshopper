@@ -70,7 +70,7 @@ function RequestContext(request, response, secure) {
                         ? mime.mimes[this.extn]
                         : 'application/octet-stream',
         'date': new Date().toUTCString(),
-        'x-powered-by': 'Grasshopper/0.4.3'
+        'x-powered-by': 'Grasshopper'
     };
 
     var cookieLine = request.headers['cookie'];
