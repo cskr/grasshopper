@@ -370,7 +370,7 @@ RequestContext.prototype._renderStatic = function() {
     var self = this;
     fs.stat(staticFile, function(err, stats) {
         if(err || !stats.isFile()) {
-            if((err && err.errno == 2) || !stats.isFile()) {
+            if((err && err.code == 'ENOENT') || !stats.isFile()) {
                 self.extn = defaultViewExtn;
                 self.headers['content-type'] = mime.mimes[defaultViewExtn];
                 self.renderError(404);
