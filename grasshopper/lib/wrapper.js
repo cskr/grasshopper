@@ -44,7 +44,7 @@ ResponseWrapper.prototype.writeHead = function(statusCode, reasonPhrase,
 }
 
 ResponseWrapper.prototype.write = function(chunk, encoding) {
-    this.response.write(chunk, encoding);
+    return this.response.write(chunk, encoding);
 }
 
 ResponseWrapper.prototype.end = function(data, encoding) {
