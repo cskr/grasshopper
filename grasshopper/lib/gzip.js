@@ -63,7 +63,7 @@ GzipResponseWrapper.prototype.write = function(chunk, encoding) {
     if(this._compressor) {
         if(!this._pumpStarted) {
             this._pumpStarted = true;
-            util.pump(this._compressor, this.response);
+            this._compressor.pipe(this.response);
         }
 
         var self = this;

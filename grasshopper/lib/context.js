@@ -450,7 +450,8 @@ function sendStatic(staticFile, stats, ctx, cb) {
 
 		    ctx.response.writeHead(ctx.status, ctx.headers);
 		    if(ctx.request.method == 'GET') {
-		        util.pump(stream, ctx.response, cb);
+                stream.pipe(ctx.response);
+                cb && stream.on('end', cb);
 		    } else {
 		        ctx.response.end();
                 cb && cb();
