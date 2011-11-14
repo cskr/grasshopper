@@ -16,11 +16,8 @@
 exports.api = {};
 
 var util = require('util'),
-    ResponseWrapper = require('./wrapper.js').api.ResponseWrapper
-try {
-    var compress = require('compress');
-} catch(e) {
-}
+    ResponseWrapper = require('./wrapper.js').api.ResponseWrapper,
+    zlib = require('zlib');
 
 function GzipResponseWrapper(response, compressionLevel) {
     ResponseWrapper.call(this, response);
@@ -29,7 +26,7 @@ function GzipResponseWrapper(response, compressionLevel) {
 util.inherits(GzipResponseWrapper, ResponseWrapper);
 
 GzipResponseWrapper.prototype._createCompressor = function() {
-    this._compressor = new compress.GzipStream();
+    this._compressor = zlib.createGzip();
 };
 
 GzipResponseWrapper.prototype.writeHead = function(statusCode, reasonPhrase,
@@ -87,14 +84,11 @@ GzipResponseWrapper.prototype.end = function(data, encoding) {
     this.writable = false;
 
     if(this._compressor) {
-        if(data) {
-            if(!this._pumpStarted) {
-                util.pump(this._compressor, this.response);
-            }
-
-            this._compressor.write(data, encoding);
+        if(!this._pumpStarted) {
+            this._compressor.pipe(this.response);
         }
-        this._compressor.close();
+
+        this._compressor.end(data, encoding);
     } else {
         this.response.end(data, encoding);
     }
@@ -104,7 +98,7 @@ exports.GzipResponseWrapper = GzipResponseWrapper;
 
 exports.api.gzipFilter = function(next) {
     var acceptHeader = this.request.headers['accept-encoding'];
-    if(compress && acceptHeader && acceptHeader.indexOf('gzip') >= 0) {
+    if(acceptHeader && acceptHeader.indexOf('gzip') >= 0) {
         this.response = new GzipResponseWrapper(this.response, 9);
     }
     next();
