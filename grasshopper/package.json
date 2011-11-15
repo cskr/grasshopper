@@ -1,16 +1,16 @@
 {
     "name" : "grasshopper",
     "description" : "A feature-rich and flexible MVC framework.",
-    "version" : "0.4.3",
+    "version" : "0.5.0",
     "author": {
         "name": "Chandra Sekar S",
         "url": "http://tuxychandru.blogspot.com",
         "email": "chandru.in@gmail.com"
     },
     "dependencies": {
-        "formidable": ">=1.0.2"
+        "formidable": ">=1.0.7"
     },
-    "engines" : { "node": ">= 0.4.0" },
+    "engines" : { "node": ">= 0.6.0" },
     "main" : ".",
     "bin" : {"grasshopper": "./cli.js"},
     "repository" : "git://github.com/tuxychandru/grasshopper.git"
