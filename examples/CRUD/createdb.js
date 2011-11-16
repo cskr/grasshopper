@@ -1,9 +1,7 @@
 var mysql = require('mysql'),
     db_cred = require('./db_cred');
 
-var client = new mysql.Client(db_cred);
-
-client.connect();
+var client = mysql.createClient(db_cred);
 
 client.query('create database crud');
 client.query('use crud');

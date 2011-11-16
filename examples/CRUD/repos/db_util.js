@@ -2,10 +2,8 @@ var mysql = require('mysql'),
     db_cred = require('../db_cred');
 
 exports.getClient = function() {
-    var client = new mysql.Client(db_cred);
-    client.database = 'crud';
-    client.connect();
-    return client;
+    db_cred.database = 'crud';
+    return mysql.createClient(db_cred);
 }
 
 exports.mapRows = function(rows, mapper) {
