@@ -4,12 +4,18 @@ var fs = require('fs');
 
 var args = process.argv.slice(2);
 var mvc = false;
+var ghVersion = '0.5.0';
 
 while((arg = args.shift()) !== undefined) {
     switch(arg) {
         case '-m':
         case '--mvc':
             mvc = true;
+            break;
+        case '-v':
+        case '--version':
+            console.log(ghVersion);
+            process.exit();
             break;
         default:
             var appName = arg;
@@ -30,7 +36,7 @@ fs.writeFileSync(appName + '/package.json', [
         '    "name" : ' + '"' + appName + '",',
         '    "version" : "1.0.0",',
         '    "dependencies" : {',
-        '        "grasshopper" : "0.5.0"',
+        '        "grasshopper" : "' + ghVersion + '"',
         '    },',
         '    "engines" : {',
         '        "node" : ">=' + process.versions.node + '"',
