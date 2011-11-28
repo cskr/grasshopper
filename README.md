@@ -32,10 +32,9 @@ Features
 Hello World
 -----------
 
-1. [Install npm](http://github.com/isaacs/npm#readme).
-2. Create a directory for your application.
-3. Install grasshopper in the new directory - `npm install grasshopper`.
-4. Create a file named `hello.js` in your application's directory with the following content.
+1. Create a directory for your application.
+2. Install grasshopper in the new directory - `npm install grasshopper`.
+3. Create a file named `hello.js` in your application's directory with the following content.
 
         var gh = require('grasshopper');
 
@@ -45,8 +44,8 @@ Hello World
 
         gh.serve(8080);
 
-5. From your applications directory invoke the command `node hello.js`.
-6. Point your browser at http://localhost:8080.
+4. From your applications directory invoke the command `node hello.js`.
+5. Point your browser at http://localhost:8080.
 
 Creating a Project
 ------------------
