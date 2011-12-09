@@ -18,6 +18,8 @@ exports.api = {};
 
 var http = require('http'),
     https = require('https'),
+    os = require('os'),
+    cluster = require('cluster'),
     context = require('./context'),
     dispatcher = require('./dispatcher'),
     RouteMatcher = dispatcher.RouteMatcher;
@@ -71,6 +73,22 @@ exports.api.serveSecure = function(port, credentials, hostname, callback) {
     return startServer(secureRoutes, port, credentials, hostname, callback);
 };
 
+exports.api.cluster = function(server, port, hostname, forks) {
+    if(typeof hostname == 'number') {
+        forks = hostname;
+        hostname = undefined;
+    }
+
+    if(forks === undefined) forks = os.cpus().length;
+    if(cluster.isMaster) {
+        for(var i = 0; i < forks; i++) {
+            cluster.fork();
+        }
+    } else {
+        listen(server, port, hostname);
+    }
+};
+
 exports.api.stop = function() {
     servers.forEach(function(server) {
         server.close();
@@ -120,14 +138,18 @@ function startServer(routes, port, credentials, hostname, callback) {
     servers.push(server);
 
     if(typeof port == 'number') {
-        server.listen(port, hostname, function() {
-            var url = (credentials ? 'https://' : 'http://')
-                            + (hostname || 'localhost') + ':'
-                            + port;
-            console.log('Hopping at ' + url + '. Use Ctrl+C to stop.');
-            if(callback) callback();
-        });
+        listen(server, port, hostname, callback);
     }
 
     return server;
+}
+
+function listen(server, port, hostname, callback) {
+    server.listen(port, hostname, function() {
+        var url = (server.cert !== undefined ? 'https://' : 'http://')
+                        + (hostname || 'localhost') + ':'
+                        + port;
+        console.log('Hopping at ' + url + '. Use Ctrl+C to stop.');
+        if(callback) callback();
+    });
 }
