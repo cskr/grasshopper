@@ -4,7 +4,7 @@ var fs = require('fs');
 
 var args = process.argv.slice(2);
 var mvc = false;
-var ghVersion = '0.5.0';
+var ghVersion = '0.5.1';
 
 while((arg = args.shift()) !== undefined) {
     switch(arg) {
